@@ -64,8 +64,13 @@ body {
   color: var(--c-text-dim);
 }
 
-.status-strip__timer {
+.status-strip__phase {
   margin-left: auto;
+  color: var(--c-accent);
+  text-transform: uppercase;
+}
+
+.status-strip__timer {
   font-variant-numeric: tabular-nums;
 }
 

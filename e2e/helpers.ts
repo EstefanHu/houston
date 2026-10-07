@@ -44,6 +44,22 @@ export function selected(page: Page): Promise<string | null> {
   }, MISSING);
 }
 
+/** Reads the flight state from the store. */
+export function flight(page: Page): Promise<{ t: number; phase: string; playing: boolean; speed: number }> {
+  return page.evaluate((missing) => {
+    if (!window.houstonTestHooks) throw new Error(missing);
+    return window.houstonTestHooks.flight();
+  }, MISSING);
+}
+
+/** Whether a part's engine exhaust is showing. */
+export function exhaust(page: Page, id: string): Promise<boolean> {
+  return page.evaluate(([partId, missing]) => {
+    if (!window.houstonTestHooks) throw new Error(missing);
+    return window.houstonTestHooks.exhaust(partId);
+  }, [id, MISSING] as const);
+}
+
 /** Clicks a part in the 3D view, at the on-screen centre of its bounds. */
 export async function clickPart(page: Page, id: string): Promise<void> {
   const { x, y } = await page.evaluate(([partId, missing]) => {

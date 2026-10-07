@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { descendantsOf } from '../data/parts';
 import type { PartId, Rocket } from '../data/parts';
 import { approach, explodeOffsetAt } from '../motion/explode';
+import { partPoseAt, stackAltitudeAt } from '../motion/timeline';
 import type { RocketStore } from '../state/store';
 import type { Viewer } from './viewer';
 
@@ -13,13 +14,13 @@ const isRenderable = (o: THREE.Object3D): boolean =>
   (o as THREE.Mesh).isMesh === true || (o as THREE.Line).isLine === true || (o as THREE.Points).isPoints === true;
 
 /**
- * Connects the store to the 3D model: moves parts to their exploded positions and shows or
- * hides them. Part objects are nested like the parts tree, so a part's "own" geometry is
+ * Connects the store to the 3D model: places parts (explode offset plus flight pose), shows
+ * or hides them, and highlights the selection. Part objects are nested like the parts tree, so a part's "own" geometry is
  * everything under it that doesn't belong to a child part; that is what visibility toggles.
  */
 export class RocketRig {
   readonly objects = new Map<PartId, THREE.Object3D>();
-  private readonly assembled = new Map<PartId, THREE.Vector3>();
+  private readonly assembled = new Map<PartId, { position: THREE.Vector3; quaternion: THREE.Quaternion }>();
   private readonly own = new Map<PartId, THREE.Object3D[]>();
   private readonly ownerOf = new Map<THREE.Object3D, PartId>();
   /** Original materials of currently highlighted objects, restored on deselect. */
@@ -42,7 +43,7 @@ export class RocketRig {
         continue;
       }
       this.objects.set(part.id, obj);
-      this.assembled.set(part.id, obj.position.clone());
+      this.assembled.set(part.id, { position: obj.position.clone(), quaternion: obj.quaternion.clone() });
     }
 
     const partObjects = new Set(this.objects.values());
@@ -62,7 +63,7 @@ export class RocketRig {
 
     const s = store.get();
     this.shownExplode = s.explode;
-    this.applyExplode();
+    this.applyTransforms();
     this.applyVisibility(s.hidden);
     this.applySelection(s.selected);
 
@@ -72,6 +73,10 @@ export class RocketRig {
         viewer.requestRender();
       }
       if (next.explode !== prev.explode) this.animateExplode();
+      if (next.flight.t !== prev.flight.t || next.flight.phase !== prev.flight.phase) {
+        this.applyTransforms();
+        viewer.requestRender();
+      }
       if (next.selected !== prev.selected) {
         this.applySelection(next.selected);
         viewer.requestRender();
@@ -85,18 +90,24 @@ export class RocketRig {
     return () => this.settleListeners.delete(fn);
   }
 
-  /** World-space bounds of the whole model (hidden parts included), for framing the camera. */
+  /**
+   * World-space bounds of the whole model (hidden parts included), for framing the camera.
+   * Only part geometry counts, not extras such as exhaust plumes attached to parts.
+   */
   bounds(): THREE.Box3 {
-    this.model.updateMatrixWorld(true);
-    return new THREE.Box3().setFromObject(this.model);
+    return this.boundsOf(this.rocket.parts.map((p) => p.id));
   }
 
   /** World-space bounds of a part and its sub-parts. */
   partBounds(id: PartId): THREE.Box3 {
-    const obj = this.objects.get(id);
-    if (!obj) return new THREE.Box3();
+    return this.boundsOf([id, ...descendantsOf(this.rocket.parts, id)]);
+  }
+
+  private boundsOf(ids: PartId[]): THREE.Box3 {
     this.model.updateMatrixWorld(true);
-    return new THREE.Box3().setFromObject(obj);
+    const box = new THREE.Box3();
+    for (const id of ids) for (const o of this.own.get(id) ?? []) box.expandByObject(o);
+    return box;
   }
 
   /** Whether any of a part's own geometry is showing. */
@@ -127,7 +138,7 @@ export class RocketRig {
   private animateExplode(): void {
     if (this.store.get().reducedMotion) {
       this.shownExplode = this.store.get().explode;
-      this.applyExplode();
+      this.applyTransforms();
       this.viewer.requestRender();
       this.emitSettle();
       return;
@@ -138,7 +149,7 @@ export class RocketRig {
   private readonly tick = (dt: number): boolean => {
     const target = this.store.get().explode;
     this.shownExplode = approach(this.shownExplode, target, dt);
-    this.applyExplode();
+    this.applyTransforms();
     const done = this.shownExplode === target;
     if (done) this.emitSettle();
     return !done;
@@ -148,18 +159,37 @@ export class RocketRig {
     for (const fn of this.settleListeners) fn(this.shownExplode);
   }
 
-  private applyExplode(): void {
+  /**
+   * Places every part: assembled transform + explode offset + flight pose. In flight the
+   * whole model climbs to the stack altitude; on the pad it is lifted just enough that
+   * parts exploding downward don't sink through the floor grid.
+   */
+  private applyTransforms(): void {
+    const { flight } = this.store.get();
+    const inFlight = flight.phase !== 'idle';
+    const spin = new THREE.Quaternion();
+    const euler = new THREE.Euler();
     for (const part of this.rocket.parts) {
       const obj = this.objects.get(part.id);
       const base = this.assembled.get(part.id);
       if (!obj || !base) continue;
       const [x, y, z] = explodeOffsetAt(part, this.shownExplode);
-      obj.position.set(base.x + x, base.y + y, base.z + z);
+      obj.position.set(base.position.x + x, base.position.y + y, base.position.z + z);
+      obj.quaternion.copy(base.quaternion);
+      if (inFlight) {
+        const pose = partPoseAt(part, flight.t);
+        if (pose.detached) {
+          obj.position.add(new THREE.Vector3(...pose.offset));
+          obj.quaternion.multiply(spin.setFromEuler(euler.set(...pose.rotation)));
+        }
+      }
     }
-    // Parts that explode downward would sink through the floor grid; lift the whole model
-    // so its lowest point stays on the floor.
-    this.model.position.y = 0;
-    this.model.position.y = Math.max(0, -this.bounds().min.y);
+    if (inFlight) {
+      this.model.position.y = stackAltitudeAt(flight.t);
+    } else {
+      this.model.position.y = 0;
+      this.model.position.y = Math.max(0, -this.bounds().min.y);
+    }
   }
 
   // Selecting a stage highlights its components too.

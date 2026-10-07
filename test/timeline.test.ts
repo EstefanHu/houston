@@ -35,10 +35,12 @@ describe('partPoseAt', () => {
   it('is zero before separation and drifts after', () => {
     const s1 = part('stage1');
     expect(partPoseAt(s1, 153)).toEqual({ offset: [0, 0, 0], rotation: [0, 0, 0], detached: false });
+    const sep = s1.flightEvents?.find((e) => e.event === 'separate');
     const pose = partPoseAt(s1, 163);
     expect(pose.detached).toBe(true);
-    expect(pose.offset[1]).toBeCloseTo(-60);
-    expect(pose.rotation[0]).toBeCloseTo(2.5);
+    expect(pose.offset[1]).toBeCloseTo((sep?.velocity?.[1] ?? 0) * 10);
+    expect(pose.rotation[0]).toBeCloseTo((sep?.spin?.[0] ?? 0) * 10);
+    expect(pose.offset[1]).toBeLessThan(0); // falls behind the stack
   });
   it('is deterministic, so scrubbing back re-docks', () => {
     const f = part('payload.fairing.left');

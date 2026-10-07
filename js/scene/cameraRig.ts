@@ -47,8 +47,17 @@ export class CameraRig {
     this.controls.maxDistance = distance * 3;
   }
 
-  home(animate = true): void {
-    this.moveTo(this.homeView.position, this.homeView.target, animate);
+  /** Returns to the default view. `offset` shifts it, e.g. to wherever the rocket has flown. */
+  home(animate = true, offset: THREE.Vector3 = new THREE.Vector3()): void {
+    this.moveTo(this.homeView.position.clone().add(offset), this.homeView.target.clone().add(offset), animate);
+  }
+
+  /** Moves camera and orbit target together, keeping the view: used to follow the rocket. */
+  shift(delta: THREE.Vector3): void {
+    if (delta.lengthSq() === 0) return;
+    this.viewer.camera.position.add(delta);
+    this.controls.target.add(delta);
+    this.viewer.requestRender();
   }
 
   /** Frames `box`, keeping the current viewing direction. */

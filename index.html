@@ -5,16 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="dark" />
     <title>Houston</title>
-    <link rel="icon" href="data:," />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/layout.css" />
     <link rel="stylesheet" href="/styles/panel.css" />
     <link rel="stylesheet" href="/styles/info-card.css" />
+    <link rel="stylesheet" href="/styles/flight.css" />
   </head>
   <body>
     <header class="status-strip">
       <span class="status-strip__brand">HOUSTON</span>
       <span class="status-strip__vehicle" data-vehicle-name></span>
+      <span class="status-strip__phase" data-mission-phase aria-label="Flight phase"></span>
       <span class="status-strip__timer" data-mission-timer aria-label="Mission timer">T-00:00</span>
     </header>
 
@@ -52,6 +58,33 @@
             <button class="button button--small" type="button" data-explode-reset>Reset</button>
           </div>
           <p class="panel__note" data-explode-note hidden>Explode is locked while a flight is running.</p>
+        </section>
+
+        <section class="panel__section" aria-labelledby="flight-heading">
+          <h2 class="panel__heading" id="flight-heading">Flight</h2>
+          <div class="flight__controls">
+            <button class="button button--primary" type="button" data-flight-primary>Launch</button>
+            <button class="button" type="button" data-flight-stop>Abort</button>
+            <fieldset class="flight__speed">
+              <legend class="sr-only">Playback speed</legend>
+              <label><input type="radio" name="flight-speed" value="1" data-flight-speed /><span>1×</span></label>
+              <label><input type="radio" name="flight-speed" value="2" data-flight-speed /><span>2×</span></label>
+              <label><input type="radio" name="flight-speed" value="4" data-flight-speed /><span>4×</span></label>
+            </fieldset>
+          </div>
+          <div class="flight__scrub">
+            <input class="flight__slider" type="range" aria-label="Mission time" data-flight-scrub />
+            <div class="flight__markers" aria-hidden="true" data-flight-markers></div>
+          </div>
+          <div class="flight__caption" aria-live="polite">
+            <p class="flight__event-title" data-flight-event></p>
+            <p class="flight__caption-text" data-flight-caption></p>
+          </div>
+          <p class="panel__note" data-flight-note hidden></p>
+          <details class="flight__timeline">
+            <summary>Mission timeline</summary>
+            <ol class="flight__events" data-flight-events></ol>
+          </details>
         </section>
 
         <section class="panel__section" aria-labelledby="parts-heading">
