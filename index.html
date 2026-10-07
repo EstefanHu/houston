@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/layout.css" />
     <link rel="stylesheet" href="/styles/panel.css" />
+    <link rel="stylesheet" href="/styles/info-card.css" />
   </head>
   <body>
     <header class="status-strip">
@@ -20,6 +21,15 @@
     <main class="app">
       <section class="viewport" aria-label="3D view of the rocket">
         <div class="viewport__canvas" data-canvas-host></div>
+        <section class="info-card" aria-labelledby="info-card-title" data-info-card hidden>
+          <header class="info-card__head">
+            <p class="info-card__stage" data-info-stage></p>
+            <h2 class="info-card__title" id="info-card-title" data-info-title></h2>
+            <button class="info-card__close" type="button" aria-label="Close part info" data-info-close>×</button>
+          </header>
+          <div class="info-card__body" data-info-body></div>
+        </section>
+        <p class="sr-only" aria-live="polite" data-selection-status></p>
         <button class="viewport__home" type="button" data-home aria-label="Reset view" title="Reset view">⌂</button>
         <div class="loading" data-loading role="status">
           <div class="loading__spinner" aria-hidden="true"></div>
@@ -52,7 +62,7 @@
           <ul class="parts-tree" aria-labelledby="parts-heading" data-parts-tree></ul>
         </section>
 
-        <p class="panel__hint">Drag to orbit, scroll or pinch to zoom, right-drag or two-finger drag to pan.</p>
+        <p class="panel__hint">Click a part to learn about it. Drag to orbit, scroll or pinch to zoom, right-drag or two-finger drag to pan. Esc clears the selection.</p>
       </aside>
     </main>
 

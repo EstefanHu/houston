@@ -7,6 +7,7 @@
   --c-text-dim: #93a9c4;
   --c-accent: #6cc4ff;
   --c-viewport: #0b1626;
+  --c-highlight: #ffb347; /* matches the 3D selection highlight */
 
   --font-ui: system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;

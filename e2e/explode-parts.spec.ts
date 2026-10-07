@@ -11,7 +11,7 @@ const STAGE1_Y = 0;
 const PAYLOAD_Y = 11;
 
 const slider = (page: Page) => page.getByRole('slider', { name: 'Explode' });
-const partRow = (page: Page, name: string) => page.getByRole('checkbox', { name, exact: true });
+const partRow = (page: Page, name: string) => page.getByRole('checkbox', { name: `Show ${name}`, exact: true });
 
 test.beforeEach(async ({ page }) => {
   await openApp(page);

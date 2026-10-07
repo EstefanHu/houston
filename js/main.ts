@@ -1,12 +1,15 @@
+import { Vector3 } from 'three';
 import { rocket } from './data/rocket';
 import { formatMissionTime } from './motion/timeline';
 import { createReducer, initialState } from './state/reducer';
 import { createStore } from './state/store';
 import { CameraRig } from './scene/cameraRig';
 import { buildPlaceholderRocket } from './scene/placeholderRocket';
+import { attachPicker } from './scene/picker';
 import { RocketRig } from './scene/rocketRig';
 import { Viewer } from './scene/viewer';
 import { mountExplode } from './ui/explode';
+import { mountInfoCard } from './ui/infoCard';
 import { mountPartsTree } from './ui/partsTree';
 
 declare global {
@@ -15,7 +18,10 @@ declare global {
     houstonTestHooks?: {
       cameraPosition(): [number, number, number];
       explode(): number;
-      part(id: string): { position: [number, number, number]; shown: boolean };
+      part(id: string): { position: [number, number, number]; shown: boolean; highlighted: boolean };
+      selected(): string | null;
+      /** Where a part's centre is on screen, in CSS pixels, for clicking it. */
+      screenPoint(id: string): { x: number; y: number };
     };
   }
 }
@@ -45,6 +51,14 @@ mountExplode({
   note: el('[data-explode-note]'),
 }, store);
 mountPartsTree(el('[data-parts-tree]'), el('[data-show-all]'), rocket, store);
+mountInfoCard({
+  card: el('[data-info-card]'),
+  stage: el('[data-info-stage]'),
+  title: el('[data-info-title]'),
+  body: el('[data-info-body]'),
+  close: el('[data-info-close]'),
+  status: el('[data-selection-status]'),
+}, rocket, store);
 
 const loading = el('[data-loading]');
 
@@ -66,6 +80,13 @@ function startScene(): void {
     camera.focus(rig.bounds());
   });
 
+  attachPicker(viewer, rig, (id) => store.dispatch({ type: 'select', id }));
+  // Frame the selected part, unless it's hidden (then only its info card shows).
+  store.subscribe((s, prev) => {
+    if (s.selected === prev.selected || s.selected === null) return;
+    if (rig.isSubtreeShown(s.selected)) camera.focus(rig.partBounds(s.selected));
+  });
+
   if (import.meta.env.DEV) {
     window.houstonTestHooks = {
       cameraPosition: () => viewer.camera.position.toArray(),
@@ -73,7 +94,13 @@ function startScene(): void {
       part: (id) => {
         const obj = rig.objects.get(id);
         if (!obj) throw new Error(`Unknown part ${id}`);
-        return { position: obj.position.toArray(), shown: rig.isShown(id) };
+        return { position: obj.position.toArray(), shown: rig.isShown(id), highlighted: rig.isHighlighted(id) };
+      },
+      selected: () => store.get().selected,
+      screenPoint: (id) => {
+        const p = rig.partBounds(id).getCenter(new Vector3()).project(viewer.camera);
+        const rect = viewer.renderer.domElement.getBoundingClientRect();
+        return { x: rect.left + ((p.x + 1) / 2) * rect.width, y: rect.top + ((1 - p.y) / 2) * rect.height };
       },
     };
   }

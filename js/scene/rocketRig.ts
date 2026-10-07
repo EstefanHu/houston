@@ -1,8 +1,13 @@
 import * as THREE from 'three';
+import { descendantsOf } from '../data/parts';
 import type { PartId, Rocket } from '../data/parts';
 import { approach, explodeOffsetAt } from '../motion/explode';
 import type { RocketStore } from '../state/store';
 import type { Viewer } from './viewer';
+
+const HIGHLIGHT = 0xffb347;
+
+type Renderable = THREE.Mesh | THREE.Line | THREE.Points;
 
 const isRenderable = (o: THREE.Object3D): boolean =>
   (o as THREE.Mesh).isMesh === true || (o as THREE.Line).isLine === true || (o as THREE.Points).isPoints === true;
@@ -16,6 +21,10 @@ export class RocketRig {
   readonly objects = new Map<PartId, THREE.Object3D>();
   private readonly assembled = new Map<PartId, THREE.Vector3>();
   private readonly own = new Map<PartId, THREE.Object3D[]>();
+  private readonly ownerOf = new Map<THREE.Object3D, PartId>();
+  /** Original materials of currently highlighted objects, restored on deselect. */
+  private readonly originals = new Map<Renderable, Renderable['material']>();
+  private readonly highlightCache = new WeakMap<THREE.Material, THREE.Material>();
   private readonly settleListeners = new Set<(explode: number) => void>();
   /** The explode factor currently on screen; eases toward the store's value. */
   private shownExplode: number;
@@ -48,12 +57,14 @@ export class RocketRig {
       };
       visit(obj);
       this.own.set(id, own);
+      for (const o of own) this.ownerOf.set(o, id);
     }
 
     const s = store.get();
     this.shownExplode = s.explode;
     this.applyExplode();
     this.applyVisibility(s.hidden);
+    this.applySelection(s.selected);
 
     store.subscribe((next, prev) => {
       if (next.hidden !== prev.hidden) {
@@ -61,6 +72,10 @@ export class RocketRig {
         viewer.requestRender();
       }
       if (next.explode !== prev.explode) this.animateExplode();
+      if (next.selected !== prev.selected) {
+        this.applySelection(next.selected);
+        viewer.requestRender();
+      }
     });
   }
 
@@ -76,9 +91,37 @@ export class RocketRig {
     return new THREE.Box3().setFromObject(this.model);
   }
 
+  /** World-space bounds of a part and its sub-parts. */
+  partBounds(id: PartId): THREE.Box3 {
+    const obj = this.objects.get(id);
+    if (!obj) return new THREE.Box3();
+    this.model.updateMatrixWorld(true);
+    return new THREE.Box3().setFromObject(obj);
+  }
+
   /** Whether any of a part's own geometry is showing. */
   isShown(id: PartId): boolean {
     return this.own.get(id)?.some((o) => o.visible) ?? false;
+  }
+
+  /** Whether the part or any of its sub-parts is showing. */
+  isSubtreeShown(id: PartId): boolean {
+    return [id, ...descendantsOf(this.rocket.parts, id)].some((p) => this.isShown(p));
+  }
+
+  /** Whether the part's geometry is drawn with the highlight. */
+  isHighlighted(id: PartId): boolean {
+    return this.own.get(id)?.some((o) => this.originals.has(o as Renderable)) ?? false;
+  }
+
+  /** Visible meshes that can be clicked. */
+  pickables(): THREE.Object3D[] {
+    return [...this.ownerOf.keys()].filter((o) => (o as THREE.Mesh).isMesh === true && o.visible);
+  }
+
+  /** The part an object belongs to. */
+  partOf(object: THREE.Object3D): PartId | null {
+    return this.ownerOf.get(object) ?? null;
   }
 
   private animateExplode(): void {
@@ -117,6 +160,37 @@ export class RocketRig {
     // so its lowest point stays on the floor.
     this.model.position.y = 0;
     this.model.position.y = Math.max(0, -this.bounds().min.y);
+  }
+
+  // Selecting a stage highlights its components too.
+  private applySelection(selected: PartId | null): void {
+    for (const [o, material] of this.originals) o.material = material;
+    this.originals.clear();
+    if (selected === null) return;
+    for (const id of [selected, ...descendantsOf(this.rocket.parts, selected)]) {
+      for (const o of this.own.get(id) ?? []) {
+        const r = o as Renderable;
+        this.originals.set(r, r.material);
+        r.material = Array.isArray(r.material) ? r.material.map((m) => this.highlighted(m)) : this.highlighted(r.material);
+      }
+    }
+  }
+
+  private highlighted(material: THREE.Material): THREE.Material {
+    let h = this.highlightCache.get(material);
+    if (!h) {
+      h = material.clone();
+      if (h instanceof THREE.MeshStandardMaterial) {
+        h.color.lerp(new THREE.Color(HIGHLIGHT), 0.65);
+        h.emissive.set(HIGHLIGHT);
+        h.emissiveIntensity = 0.25;
+      } else if (h instanceof THREE.LineBasicMaterial) {
+        h.color.set(HIGHLIGHT);
+        h.opacity = 1;
+      }
+      this.highlightCache.set(material, h);
+    }
+    return h;
   }
 
   // Hidden parts keep moving with the explode, so they reappear in the right place.

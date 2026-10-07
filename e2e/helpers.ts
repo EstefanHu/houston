@@ -29,11 +29,28 @@ export function explode(page: Page): Promise<number> {
 }
 
 /** Reads a part's local position and whether its geometry is showing in 3D. */
-export function part(page: Page, id: string): Promise<{ position: Vec3; shown: boolean }> {
+export function part(page: Page, id: string): Promise<{ position: Vec3; shown: boolean; highlighted: boolean }> {
   return page.evaluate(([partId, missing]) => {
     if (!window.houstonTestHooks) throw new Error(missing);
     return window.houstonTestHooks.part(partId);
   }, [id, MISSING] as const);
+}
+
+/** Reads the selected part id from the store. */
+export function selected(page: Page): Promise<string | null> {
+  return page.evaluate((missing) => {
+    if (!window.houstonTestHooks) throw new Error(missing);
+    return window.houstonTestHooks.selected();
+  }, MISSING);
+}
+
+/** Clicks a part in the 3D view, at the on-screen centre of its bounds. */
+export async function clickPart(page: Page, id: string): Promise<void> {
+  const { x, y } = await page.evaluate(([partId, missing]) => {
+    if (!window.houstonTestHooks) throw new Error(missing);
+    return window.houstonTestHooks.screenPoint(partId);
+  }, [id, MISSING] as const);
+  await page.mouse.click(x, y);
 }
 
 /** Opens the app and waits until the loading screen has gone, meaning the first frame is drawn. */

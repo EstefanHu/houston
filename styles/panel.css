@@ -136,13 +136,28 @@
   transform: rotate(-90deg);
 }
 
-.parts-tree__label {
-  display: flex;
+.parts-tree__name {
   flex: 1;
-  align-items: center;
-  gap: var(--space-2);
   min-width: 0;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
   cursor: pointer;
+}
+
+.parts-tree__name:hover {
+  background: var(--c-surface-2);
+}
+
+/* Selected row: amber edge and tint to match the 3D highlight, plus a bold name. */
+.parts-tree__row.is-selected .parts-tree__name {
+  border-color: var(--c-highlight);
+  background: color-mix(in srgb, var(--c-highlight) 14%, transparent);
+  font-weight: 600;
 }
 
 .parts-tree__checkbox {
@@ -152,7 +167,7 @@
 }
 
 /* Hidden parts: dimmed and struck through, alongside the unchecked box. */
-.parts-tree__item.is-hidden > .parts-tree__row .parts-tree__label {
+.parts-tree__item.is-hidden > .parts-tree__row .parts-tree__name {
   color: var(--c-text-dim);
   text-decoration: line-through;
 }
