@@ -2,8 +2,6 @@
 
 Houston is a browser-based "mission control" for a digital rocket. You can take a 3D rocket apart, inspect each component, and fly it through a simplified launch with staging. It is built with TypeScript, vanilla CSS, and three.js, and is hosted as a static site.
 
-**Live:** https://estefanhu.github.io/houston/ (deployed from `main` by CI)
-
 See the [design write-up](docs/houston-design.md) and [credits](CREDITS.md).
 
 ## Development
@@ -25,6 +23,9 @@ npm run test:e2e  # Playwright browser tests (first time: npx playwright install
 
 ## Deployment
 
-Every push to `main` runs lint, typecheck, unit tests, the build and the browser tests; if
-they all pass, CI publishes `dist/` to GitHub Pages. One-time setup: in the repo's
-**Settings → Pages**, set **Source** to **GitHub Actions**.
+The site is hosted on Vercel, which builds and deploys from GitHub on its own: production
+from `main`, and a preview deployment for each pull request. Vercel detects Vite, so the
+defaults are right: build command `npm run build`, output directory `dist`.
+
+GitHub Actions (`.github/workflows/ci.yml`) only runs the checks: lint, typecheck, unit
+tests, the build and the browser tests.

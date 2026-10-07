@@ -244,10 +244,9 @@ houston/
 
 ## 7. Hosting and deployment
 
-- `npm run build` outputs a static site in `dist/`. Host it on **GitHub Pages**, Netlify, or Cloudflare Pages. No special headers are needed.
-- Vite's `base` is `./`, so the same build works at a domain root or under a sub-path such as a GitHub Pages project site (`/houston/`).
-- Serve `.js` and `.glb` with gzip or brotli (all three hosts do this by default).
-- CI on every push to `main` runs lint, typecheck, tests and the build, then deploys.
+- `npm run build` outputs a static site in `dist/`, hosted on **Vercel** under the `houston` subdomain. Vercel builds from GitHub: production from `main`, a preview deployment per pull request. No special headers are needed.
+- Vite's `base` is `./`, so the same build works at a domain root or under a sub-path.
+- GitHub Actions runs lint, typecheck, unit tests, the build and the browser tests on every push and pull request. It does not deploy.
 
 ## 8. Performance budget
 
@@ -267,7 +266,7 @@ houston/
 | M2 | Explode + parts tree | The store, the explode slider, and visibility/isolate all work and stay in sync both ways. |
 | M3 | Picking + info cards | Selecting a part from 3D or the tree highlights it, focuses the camera, and opens the card. Content exists for every part. |
 | M4 | Flight sim | Timeline, scrub, staging, captions, and chase camera. |
-| M5 | Polish + ship | Accessibility pass, reduced motion, mobile bottom sheet, performance pass, and public deploy. |
+| M5 | Polish + ship | Accessibility pass, reduced motion, mobile bottom sheet, performance pass, and public deploy (Vercel). |
 
 ## 10. Open questions and risks
 
