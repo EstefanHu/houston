@@ -1,0 +1,236 @@
+{
+  "id": "houston-1",
+  "name": "Houston-1",
+  "parts": [
+    {
+      "id": "stage1",
+      "name": "First stage",
+      "parent": null,
+      "stage": 1,
+      "meshName": "Stage1",
+      "explodeOffset": [0, -6, 0],
+      "info": {
+        "summary": "The booster that lifts the whole rocket off the pad and through the thickest part of the atmosphere.",
+        "purpose": "Provides most of the thrust for the first two and a half minutes, then separates and falls away so the rocket stops carrying its empty weight.",
+        "specs": { "Height": "42 m", "Diameter": "3.7 m", "Burn time": "150 s" },
+        "funFact": "Most of a first stage's launch mass is propellant. The structure is a thin-walled can by comparison."
+      },
+      "flightEvents": [
+        { "event": "separate", "t": 153, "velocity": [0, -6, 0], "spin": [0.25, 0, 0.1] }
+      ]
+    },
+    {
+      "id": "stage1.engines",
+      "name": "First-stage engine cluster",
+      "parent": "stage1",
+      "stage": 1,
+      "meshName": "Stage1_Engines",
+      "explodeOffset": [0, -3, 0],
+      "info": {
+        "summary": "Nine engines arranged in a ring around a centre engine.",
+        "purpose": "Burns fuel and oxidizer to produce thrust. The outer engines can swivel (gimbal) to steer.",
+        "materials": ["Copper alloy combustion chambers", "Inconel nozzles"],
+        "specs": { "Engines": "9", "Total thrust": "7,600 kN (sea level)", "Throttle range": "40–100%" },
+        "funFact": "Clustering many small engines means the rocket can sometimes still reach orbit if one shuts down early."
+      },
+      "flightEvents": [
+        { "event": "ignite", "t": -3 },
+        { "event": "shutdown", "t": 150 }
+      ]
+    },
+    {
+      "id": "stage1.fuel",
+      "name": "First-stage fuel tank",
+      "parent": "stage1",
+      "stage": 1,
+      "meshName": "Stage1_FuelTank",
+      "explodeOffset": [0, -1.5, 0],
+      "info": {
+        "summary": "The lower tank, holding refined kerosene (RP-1).",
+        "purpose": "Stores the fuel that the engines burn together with liquid oxygen.",
+        "materials": ["Aluminium-lithium alloy"],
+        "specs": { "Propellant": "RP-1 kerosene" },
+        "funFact": "The tanks are pressurised with helium so the walls stay stiff, a bit like a sealed can of soda."
+      }
+    },
+    {
+      "id": "stage1.lox",
+      "name": "First-stage oxidizer tank",
+      "parent": "stage1",
+      "stage": 1,
+      "meshName": "Stage1_LoxTank",
+      "explodeOffset": [0, 0.5, 0],
+      "info": {
+        "summary": "The upper tank, holding liquid oxygen at about −183 °C.",
+        "purpose": "Supplies the oxygen the fuel needs to burn. There is no air to breathe in space, so the rocket carries its own.",
+        "materials": ["Aluminium-lithium alloy", "Foam insulation"],
+        "specs": { "Propellant": "Liquid oxygen (LOX)" },
+        "funFact": "The white vapour pouring off a rocket on the pad is moist air freezing against the super-cold oxygen tank."
+      }
+    },
+    {
+      "id": "stage1.fins",
+      "name": "Fins",
+      "parent": "stage1",
+      "stage": 1,
+      "meshName": "Stage1_Fins",
+      "explodeOffset": [0, -2, 1.5],
+      "info": {
+        "summary": "Small aerodynamic fins at the base of the booster.",
+        "purpose": "Keep the rocket pointed nose-first while it is moving fast through the lower atmosphere.",
+        "materials": ["Titanium"],
+        "funFact": "Fins only work while there is enough air. Higher up, steering is done entirely by gimballing the engines."
+      }
+    },
+    {
+      "id": "stage1.interstage",
+      "name": "Interstage",
+      "parent": "stage1",
+      "stage": 1,
+      "meshName": "Stage1_Interstage",
+      "explodeOffset": [0, 2, 0],
+      "info": {
+        "summary": "The hollow ring that joins the two stages and covers the second-stage engine.",
+        "purpose": "Carries loads between the stages and holds the separation mechanism.",
+        "materials": ["Carbon-fibre composite"],
+        "funFact": "Separation is often done with pneumatic pushers instead of explosives, so the hardware can be reused."
+      }
+    },
+    {
+      "id": "stage2",
+      "name": "Second stage",
+      "parent": null,
+      "stage": 2,
+      "meshName": "Stage2",
+      "explodeOffset": [0, 1, 0],
+      "info": {
+        "summary": "The upper stage that finishes the job of reaching orbit.",
+        "purpose": "Takes over once the first stage is spent and accelerates the payload to orbital speed, about 7.8 km/s.",
+        "specs": { "Height": "12 m", "Burn time": "350 s" },
+        "funFact": "Reaching orbit is mostly about going sideways fast, not just going up."
+      }
+    },
+    {
+      "id": "stage2.engine",
+      "name": "Vacuum engine",
+      "parent": "stage2",
+      "stage": 2,
+      "meshName": "Stage2_Engine",
+      "explodeOffset": [0, -2, 0],
+      "info": {
+        "summary": "A single engine with an extra-large nozzle.",
+        "purpose": "Provides thrust in near-vacuum, where a wide nozzle extracts more push from the exhaust.",
+        "materials": ["Niobium alloy nozzle extension"],
+        "specs": { "Thrust": "980 kN (vacuum)" },
+        "funFact": "This nozzle would perform badly at sea level. Air pressure would make the exhaust flow separate from the nozzle walls."
+      },
+      "flightEvents": [
+        { "event": "ignite", "t": 160 },
+        { "event": "shutdown", "t": 510 }
+      ]
+    },
+    {
+      "id": "stage2.tanks",
+      "name": "Second-stage tanks",
+      "parent": "stage2",
+      "stage": 2,
+      "meshName": "Stage2_Tanks",
+      "explodeOffset": [0, 0, 0],
+      "info": {
+        "summary": "Fuel and oxidizer tanks sharing a common wall.",
+        "purpose": "Store propellant for the second-stage burn while keeping the stage short and light.",
+        "materials": ["Aluminium-lithium alloy"],
+        "funFact": "A shared tank wall saves length and mass, but it has to be well insulated because the two propellants are stored at very different temperatures."
+      }
+    },
+    {
+      "id": "stage2.avionics",
+      "name": "Avionics bay",
+      "parent": "stage2",
+      "stage": 2,
+      "meshName": "Stage2_Avionics",
+      "explodeOffset": [0, 1.5, 0],
+      "info": {
+        "summary": "The rocket's flight computers, navigation sensors and radios.",
+        "purpose": "Steers the whole vehicle, sequences events like staging, and reports telemetry to the ground.",
+        "materials": ["Aluminium housings", "Radiation-tolerant electronics"],
+        "funFact": "Flight computers are often run in triplicate, so the rocket can vote out one that disagrees."
+      }
+    },
+    {
+      "id": "payload",
+      "name": "Payload section",
+      "parent": null,
+      "stage": "payload",
+      "meshName": "Payload",
+      "explodeOffset": [0, 5, 0],
+      "info": {
+        "summary": "Everything above the second stage: the satellite and its protective nose cone.",
+        "purpose": "Carries the cargo the whole mission exists to deliver.",
+        "funFact": "On many launches, the payload is only a few percent of the rocket's total mass at liftoff."
+      }
+    },
+    {
+      "id": "payload.fairing.left",
+      "name": "Fairing (left half)",
+      "parent": "payload",
+      "stage": "payload",
+      "meshName": "Payload_FairingLeft",
+      "explodeOffset": [-2.5, 1, 0],
+      "info": {
+        "summary": "One half of the clamshell nose cone.",
+        "purpose": "Shields the satellite from air pressure and heating during ascent.",
+        "materials": ["Carbon-fibre skin over an aluminium honeycomb core"],
+        "funFact": "The fairing is dropped once the air is thin enough, because carrying it any longer is just dead weight."
+      },
+      "flightEvents": [
+        { "event": "jettison", "t": 200, "velocity": [-3, 0.5, 0], "spin": [0, 0, 0.6] }
+      ]
+    },
+    {
+      "id": "payload.fairing.right",
+      "name": "Fairing (right half)",
+      "parent": "payload",
+      "stage": "payload",
+      "meshName": "Payload_FairingRight",
+      "explodeOffset": [2.5, 1, 0],
+      "info": {
+        "summary": "The other half of the clamshell nose cone.",
+        "purpose": "Shields the satellite from air pressure and heating during ascent.",
+        "materials": ["Carbon-fibre skin over an aluminium honeycomb core"]
+      },
+      "flightEvents": [
+        { "event": "jettison", "t": 200, "velocity": [3, 0.5, 0], "spin": [0, 0, -0.6] }
+      ]
+    },
+    {
+      "id": "payload.satellite",
+      "name": "Satellite",
+      "parent": "payload",
+      "stage": "payload",
+      "meshName": "Payload_Satellite",
+      "explodeOffset": [0, 0, 0],
+      "info": {
+        "summary": "A small communications satellite, folded up for launch.",
+        "purpose": "Once in orbit, it unfolds its solar panels and antennas and starts its mission.",
+        "specs": { "Mass": "1,800 kg" },
+        "funFact": "Satellites are shaken and blasted with loud noise on the ground to check they will survive the ride."
+      }
+    }
+  ],
+  "flight": {
+    "start": -10,
+    "end": 510,
+    "events": [
+      { "t": -10, "phase": "countdown", "title": "Countdown", "caption": "Final checks. The tanks are topped off and the flight computer takes control of the count." },
+      { "t": 0, "phase": "ascent", "title": "Liftoff", "caption": "The engines reach full thrust and the hold-down clamps release. The rocket rises slowly at first, because it is at its heaviest." },
+      { "t": 62, "phase": "ascent", "title": "Max-Q", "caption": "Maximum dynamic pressure: the point where speed and air density combine to put the most aerodynamic stress on the vehicle. The engines throttle down briefly to ease the load." },
+      { "t": 150, "phase": "stage-sep", "title": "MECO", "caption": "Main engine cutoff. The first stage has used up its propellant and its engines shut down." },
+      { "t": 153, "phase": "stage-sep", "title": "Stage separation", "caption": "The stages unlatch and push apart. Dropping the empty booster means the second stage has much less mass to accelerate." },
+      { "t": 160, "phase": "second-stage", "title": "Second-stage ignition", "caption": "The vacuum engine lights, a safe distance from the falling booster." },
+      { "t": 200, "phase": "fairing-sep", "title": "Fairing jettison", "caption": "The air is now thin enough that the satellite no longer needs protection, so the two fairing halves split away." },
+      { "t": 210, "phase": "second-stage", "title": "Burn to orbit", "caption": "The second stage keeps burning, now mostly accelerating sideways to build up orbital speed." },
+      { "t": 510, "phase": "orbit", "title": "SECO: orbit", "caption": "Second engine cutoff. The payload is moving fast enough to keep falling around Earth instead of back to it: it is in orbit." }
+    ]
+  }
+}

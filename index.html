@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <title>Houston</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="/styles/tokens.css" />
+    <link rel="stylesheet" href="/styles/layout.css" />
+  </head>
+  <body>
+    <header class="status-strip">
+      <span class="status-strip__brand">HOUSTON</span>
+      <span class="status-strip__vehicle" data-vehicle-name></span>
+      <span class="status-strip__timer" data-mission-timer aria-label="Mission timer">T-00:00</span>
+    </header>
+
+    <main class="app">
+      <section class="viewport" aria-label="3D view of the rocket">
+        <div class="viewport__canvas" data-canvas-host></div>
+        <button class="viewport__home" type="button" data-home aria-label="Reset view" title="Reset view">⌂</button>
+        <div class="loading" data-loading role="status">
+          <div class="loading__spinner" aria-hidden="true"></div>
+          <p>Loading rocket…</p>
+        </div>
+        <p class="viewport__notice" data-webgl-notice hidden>
+          3D view unavailable: this browser could not start WebGL. The control panel still has all the content.
+        </p>
+      </section>
+
+      <aside class="panel" aria-label="Control panel">
+        <h1 class="panel__title">Control panel</h1>
+        <p class="panel__hint">Drag to orbit, scroll or pinch to zoom, right-drag or two-finger drag to pan.</p>
+        <p class="panel__hint">Explode, parts tree, flight and part info arrive in the next milestones.</p>
+      </aside>
+    </main>
+
+    <script type="module" src="/js/main.ts"></script>
+  </body>
+</html>

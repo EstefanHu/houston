@@ -1,0 +1,21 @@
+:root {
+  --c-bg: #07101c;
+  --c-surface: #0f1d30;
+  --c-surface-2: #16273f;
+  --c-border: #24405f;
+  --c-text: #e6f0ff;
+  --c-text-dim: #93a9c4;
+  --c-accent: #6cc4ff;
+  --c-viewport: #0b1626;
+
+  --font-ui: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --panel-width: 340px;
+  --strip-height: 44px;
+  --radius: 8px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+}
