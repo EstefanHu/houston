@@ -4,6 +4,11 @@
   box-sizing: border-box;
 }
 
+/* Keep the `hidden` attribute working on elements whose class sets `display`. */
+[hidden] {
+  display: none !important;
+}
+
 html,
 body {
   height: 100%;
@@ -150,7 +155,7 @@ body {
 }
 
 .panel__title {
-  margin: 0 0 var(--space-3);
+  margin: 0 0 var(--space-4);
   font-size: 13px;
   font-family: var(--font-mono);
   letter-spacing: 0.08em;
@@ -159,8 +164,9 @@ body {
 }
 
 .panel__hint {
-  margin: 0 0 var(--space-3);
+  margin: 0;
   color: var(--c-text-dim);
+  font-size: 13px;
 }
 
 /* Narrow screens: panel below the viewport (bottom sheet comes in M5). */

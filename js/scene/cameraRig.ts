@@ -60,7 +60,22 @@ export class CameraRig {
     this.moveTo(sphere.center.clone().addScaledVector(dir, distance), sphere.center, animate);
   }
 
+  /**
+   * Drops any orbit/zoom/pan the damping is still gliding through. Otherwise it would be
+   * applied on top of a programmatic camera move, which then misses its target.
+   */
+  private settle(): void {
+    const saved = this.viewer.camera.position.clone();
+    const savedTarget = this.controls.target.clone();
+    this.controls.enableDamping = false;
+    this.controls.update(); // consumes the pending deltas
+    this.controls.enableDamping = true;
+    this.viewer.camera.position.copy(saved);
+    this.controls.target.copy(savedTarget);
+  }
+
   private moveTo(position: THREE.Vector3, target: THREE.Vector3, animate: boolean): void {
+    this.settle();
     const cam = this.viewer.camera;
     if (!animate || this.reducedMotion()) {
       cam.position.copy(position);

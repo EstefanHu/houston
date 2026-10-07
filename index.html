@@ -8,6 +8,7 @@
     <link rel="icon" href="data:," />
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/layout.css" />
+    <link rel="stylesheet" href="/styles/panel.css" />
   </head>
   <body>
     <header class="status-strip">
@@ -31,8 +32,27 @@
 
       <aside class="panel" aria-label="Control panel">
         <h1 class="panel__title">Control panel</h1>
+
+        <section class="panel__section" aria-labelledby="explode-heading">
+          <h2 class="panel__heading" id="explode-heading">Explode</h2>
+          <div class="explode">
+            <input class="explode__slider" id="explode-slider" type="range" min="0" max="1" step="0.01" value="0"
+              aria-labelledby="explode-heading" data-explode-slider />
+            <output class="explode__value" for="explode-slider" data-explode-value>0%</output>
+            <button class="button button--small" type="button" data-explode-reset>Reset</button>
+          </div>
+          <p class="panel__note" data-explode-note hidden>Explode is locked while a flight is running.</p>
+        </section>
+
+        <section class="panel__section" aria-labelledby="parts-heading">
+          <div class="panel__section-head">
+            <h2 class="panel__heading" id="parts-heading">Parts</h2>
+            <button class="button button--small" type="button" data-show-all>Show all</button>
+          </div>
+          <ul class="parts-tree" aria-labelledby="parts-heading" data-parts-tree></ul>
+        </section>
+
         <p class="panel__hint">Drag to orbit, scroll or pinch to zoom, right-drag or two-finger drag to pan.</p>
-        <p class="panel__hint">Explode, parts tree, flight and part info arrive in the next milestones.</p>
       </aside>
     </main>
 

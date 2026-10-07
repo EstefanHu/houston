@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { defineConfig } from 'vite';
 
 export default defineConfig({
@@ -6,5 +7,9 @@ export default defineConfig({
   build: {
     // three.js alone is ~580 kB minified (~150 kB gzipped), well inside the 10 MB budget.
     chunkSizeWarningLimit: 800,
+  },
+  test: {
+    // Unit tests only; the browser tests in e2e/ run under Playwright.
+    include: ['test/**/*.test.ts'],
   },
 });

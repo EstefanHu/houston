@@ -1,0 +1,168 @@
+/* Control panel: sections, buttons, explode slider, parts tree. */
+
+.panel__section {
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--c-border);
+}
+
+.panel__section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+
+.panel__heading {
+  margin: 0 0 var(--space-2);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.panel__section-head .panel__heading {
+  margin: 0;
+}
+
+.panel__note {
+  margin: var(--space-2) 0 0;
+  color: var(--c-text-dim);
+  font-size: 13px;
+}
+
+/* Buttons */
+
+.button {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  background: var(--c-surface-2);
+  color: var(--c-text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.button:hover:not(:disabled) {
+  border-color: var(--c-accent);
+}
+
+.button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.button--small {
+  padding: 2px var(--space-2);
+  font-size: 13px;
+}
+
+/* Pressed toggles get a filled style and a check mark, so the state isn't colour alone. */
+.button[aria-pressed="true"] {
+  border-color: var(--c-accent);
+  background: var(--c-accent);
+  color: var(--c-bg);
+}
+
+.button[aria-pressed="true"]::before {
+  content: "✓ ";
+}
+
+/* Explode */
+
+.explode {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.explode__slider {
+  flex: 1;
+  min-width: 0;
+  accent-color: var(--c-accent);
+}
+
+.explode__value {
+  width: 4ch;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+}
+
+/* Parts tree */
+
+.parts-tree,
+.parts-tree__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.parts-tree__list {
+  margin-left: 22px;
+  border-left: 1px solid var(--c-border);
+  padding-left: var(--space-1);
+}
+
+.parts-tree__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 34px;
+}
+
+.parts-tree__disclosure,
+.parts-tree__spacer {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+}
+
+.parts-tree__disclosure {
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--c-text-dim);
+  cursor: pointer;
+}
+
+.parts-tree__disclosure::before {
+  content: "▾";
+  display: inline-block;
+  transition: transform 0.15s;
+}
+
+.parts-tree__disclosure[aria-expanded="false"]::before {
+  transform: rotate(-90deg);
+}
+
+.parts-tree__label {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  cursor: pointer;
+}
+
+.parts-tree__checkbox {
+  flex-shrink: 0;
+  margin: 0;
+  accent-color: var(--c-accent);
+}
+
+/* Hidden parts: dimmed and struck through, alongside the unchecked box. */
+.parts-tree__item.is-hidden > .parts-tree__row .parts-tree__label {
+  color: var(--c-text-dim);
+  text-decoration: line-through;
+}
+
+.parts-tree__isolate {
+  flex-shrink: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .parts-tree__disclosure::before {
+    transition: none;
+  }
+}
