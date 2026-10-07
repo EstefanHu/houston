@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="dark" />
     <title>Houston</title>
+    <meta name="description" content="Take a 3D rocket apart, learn what each part does, and fly it to orbit." />
+    <meta name="theme-color" content="#07101c" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
@@ -33,7 +35,7 @@
             <h2 class="info-card__title" id="info-card-title" data-info-title></h2>
             <button class="info-card__close" type="button" aria-label="Close part info" data-info-close>×</button>
           </header>
-          <div class="info-card__body" data-info-body></div>
+          <div class="info-card__body" tabindex="0" data-info-body></div>
         </section>
         <p class="sr-only" aria-live="polite" data-selection-status></p>
         <button class="viewport__home" type="button" data-home aria-label="Reset view" title="Reset view">⌂</button>
@@ -46,8 +48,15 @@
         </p>
       </section>
 
-      <aside class="panel" aria-label="Control panel">
-        <h1 class="panel__title">Control panel</h1>
+      <aside class="panel" id="panel" aria-label="Control panel" data-panel>
+        <div class="panel__header" data-panel-header>
+          <span class="panel__grip" aria-hidden="true"></span>
+          <h1 class="panel__title">Control panel</h1>
+          <button class="panel__toggle" type="button" aria-controls="panel-body" aria-expanded="true" data-panel-toggle>
+            <span class="sr-only" data-panel-toggle-label>Collapse control panel</span>
+          </button>
+        </div>
+        <div class="panel__body" id="panel-body" data-panel-body>
 
         <section class="panel__section" aria-labelledby="explode-heading">
           <h2 class="panel__heading" id="explode-heading">Explode</h2>
@@ -96,6 +105,7 @@
         </section>
 
         <p class="panel__hint">Click a part to learn about it. Drag to orbit, scroll or pinch to zoom, right-drag or two-finger drag to pan. Esc clears the selection.</p>
+        </div>
       </aside>
     </main>
 

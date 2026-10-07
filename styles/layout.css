@@ -161,21 +161,77 @@ body {
 }
 
 .panel {
+  display: flex;
+  flex-direction: column;
   width: var(--panel-width);
   flex-shrink: 0;
-  overflow-y: auto;
-  padding: var(--space-4);
+  overflow: hidden;
   border-left: 1px solid var(--c-border);
   background: var(--c-surface);
 }
 
+.panel[data-size="collapsed"] {
+  width: 52px;
+}
+
+.panel__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4);
+}
+
+.panel[data-size="collapsed"] .panel__header {
+  padding: var(--space-3) 0;
+  justify-content: center;
+}
+
+.panel[data-size="collapsed"] .panel__title {
+  display: none;
+}
+
+.panel__grip {
+  display: none;
+}
+
 .panel__title {
-  margin: 0 0 var(--space-4);
+  flex: 1;
+  margin: 0;
   font-size: 13px;
   font-family: var(--font-mono);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--c-text-dim);
+}
+
+.panel__toggle {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  background: var(--c-surface-2);
+  color: var(--c-text);
+  cursor: pointer;
+}
+
+/* Wide screens: chevron points the way the panel will move. */
+.panel__toggle::before {
+  content: "›";
+  content: "›" / ""; /* decorative: not part of the accessible name */
+  font-size: 18px;
+  line-height: 1;
+}
+
+.panel__toggle[aria-expanded="false"]::before {
+  content: "‹";
+  content: "‹" / ""; /* decorative: not part of the accessible name */
+}
+
+.panel__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 var(--space-4) var(--space-4);
 }
 
 .panel__hint {
@@ -184,10 +240,15 @@ body {
   font-size: 13px;
 }
 
-/* Narrow screens: panel below the viewport (bottom sheet comes in M5). */
+/* Narrow screens: the panel is a bottom sheet over the viewport. JS sets --sheet-height. */
 @media (max-width: 768px) {
   .app {
-    flex-direction: column;
+    position: relative;
+  }
+
+  .viewport {
+    position: absolute;
+    inset: 0;
   }
 
   .viewport__home {
@@ -197,16 +258,57 @@ body {
   }
 
   .panel {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 10;
     width: auto;
-    max-height: 40%;
+    height: var(--sheet-height, 112px);
     border-left: 0;
     border-top: 1px solid var(--c-border);
+    border-radius: 14px 14px 0 0;
+    box-shadow: 0 -8px 24px rgb(0 0 0 / 0.4);
+    transition: height 0.25s ease;
+  }
+
+  .panel--dragging {
+    transition: none;
+  }
+
+  .panel__header {
+    flex-wrap: wrap;
+    padding: var(--space-2) var(--space-3) var(--space-2) var(--space-4);
+    cursor: grab;
+    touch-action: none; /* the header drags the sheet instead of scrolling the page */
+  }
+
+  .panel__grip {
+    display: block;
+    flex-basis: 100%;
+    height: 4px;
+    margin: 0 auto 2px;
+    max-width: 40px;
+    border-radius: 2px;
+    background: var(--c-border);
+  }
+
+  .panel__toggle::before,
+  .panel__toggle[aria-expanded="false"]::before {
+    content: "▴";
+    content: "▴" / ""; /* decorative: not part of the accessible name */
+  }
+
+  .panel[data-size="full"] .panel__toggle::before {
+    content: "▾";
+    content: "▾" / ""; /* decorative: not part of the accessible name */
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .loading,
-  .loading__spinner {
+  .loading__spinner,
+  .panel {
     transition: none;
     animation: none;
   }

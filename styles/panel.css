@@ -64,6 +64,7 @@
 
 .button[aria-pressed="true"]::before {
   content: "✓ ";
+  content: "✓ " / ""; /* decorative: not part of the accessible name */
 }
 
 /* Explode */
@@ -128,6 +129,7 @@
 
 .parts-tree__disclosure::before {
   content: "▾";
+  content: "▾" / ""; /* decorative: not part of the accessible name */
   display: inline-block;
   transition: transform 0.15s;
 }

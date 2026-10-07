@@ -118,14 +118,19 @@
   margin-top: 0;
 }
 
-/* Narrow screens: dock along the bottom of the viewport so the framed part stays visible.
+/* Narrow screens: dock just above the bottom sheet so the framed part stays visible.
    (The home button moves to the top-right; see layout.css.) */
 @media (max-width: 768px) {
   .info-card {
     top: auto;
-    bottom: var(--space-2);
+    bottom: calc(var(--sheet-height, 112px) + var(--space-2));
     left: var(--space-2);
     width: calc(100% - 2 * var(--space-2));
-    max-height: 50%;
+    max-height: min(50%, calc(100% - var(--sheet-height, 112px) - 64px));
   }
+}
+
+/* The body is focusable so keyboard users can scroll it; show where focus is. */
+.info-card__body:focus-visible {
+  outline-offset: -2px;
 }

@@ -1,6 +1,6 @@
 # Houston — Design Write-up
 
-> Status: draft · Owner: Estefan Hu · Last updated: 2026-10-07
+> Status: v1 built (M0–M5) · Owner: Estefan Hu · Last updated: 2026-10-07
 
 ## 1. Overview and goals
 
@@ -34,17 +34,19 @@ launch vehicle are, how they fit together, and what happens to each part during 
 
 ```
 ┌───────────────────────────────────────────┬──────────────────┐
-│                                           │  CONTROL PANEL   │
-│                                           │  ─ Explode       │
-│             3D VIEWPORT                   │  ─ Parts tree    │
-│          (three.js canvas)                │  ─ Flight        │
-│                                           │  ─ Part info     │
+│ ┌───────────┐                             │  CONTROL PANEL ‹ │
+│ │ Part info │                             │  ─ Explode       │
+│ │   card    │     3D VIEWPORT             │  ─ Flight        │
+│ └───────────┘  (three.js canvas)          │  ─ Parts tree    │
+│                                           │                  │
 │                                     [⌂]   │                  │
 └───────────────────────────────────────────┴──────────────────┘
 ```
 
 - The panel is docked on the right at about 320–360px wide and can be collapsed.
-- Below about 768px wide the panel becomes a **bottom sheet** with three snap heights: peek, half, and full.
+- Below about 768px wide the panel becomes a **bottom sheet** with three snap heights: peek, half, and full. The 3D image shifts up by half the sheet's height so the rocket stays centred in the visible area, and the info card docks just above the sheet.
+- The **info card** floats over the top-left of the viewport rather than sitting in the panel, so opening it doesn't push the parts tree around.
+- **Flight** sits above the parts tree so Launch is visible without scrolling.
 - Mission-control styling: dark UI, monospace numerals, a status strip with the mission timer.
 - **Schematic look** in the viewport: a blueprint-style background with a faint grid, flat-shaded parts with crisp edge outlines (`EdgesGeometry`), and a distinct outline colour for the selected part.
 

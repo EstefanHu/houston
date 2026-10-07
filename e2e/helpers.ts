@@ -60,13 +60,26 @@ export function exhaust(page: Page, id: string): Promise<boolean> {
   }, [id, MISSING] as const);
 }
 
-/** Clicks a part in the 3D view, at the on-screen centre of its bounds. */
-export async function clickPart(page: Page, id: string): Promise<void> {
-  const { x, y } = await page.evaluate(([partId, missing]) => {
+/** Where a part's centre is on screen, in CSS pixels. */
+export function screenPoint(page: Page, id: string): Promise<{ x: number; y: number }> {
+  return page.evaluate(([partId, missing]) => {
     if (!window.houstonTestHooks) throw new Error(missing);
     return window.houstonTestHooks.screenPoint(partId);
   }, [id, MISSING] as const);
+}
+
+/** Clicks a part in the 3D view, at the on-screen centre of its bounds. */
+export async function clickPart(page: Page, id: string): Promise<void> {
+  const { x, y } = await screenPoint(page, id);
   await page.mouse.click(x, y);
+}
+
+/** Frames rendered so far. */
+export function frames(page: Page): Promise<number> {
+  return page.evaluate((missing) => {
+    if (!window.houstonTestHooks) throw new Error(missing);
+    return window.houstonTestHooks.frames();
+  }, MISSING);
 }
 
 /** Opens the app and waits until the loading screen has gone, meaning the first frame is drawn. */

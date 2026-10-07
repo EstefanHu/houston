@@ -11,6 +11,7 @@ import { Viewer } from './scene/viewer';
 import { mountExplode } from './ui/explode';
 import { mountFlightControls } from './ui/flightControls';
 import { mountInfoCard } from './ui/infoCard';
+import { mountPanel } from './ui/panel';
 import { mountPartsTree } from './ui/partsTree';
 import { mountStatusStrip } from './ui/statusStrip';
 
@@ -26,6 +27,7 @@ declare global {
       screenPoint(id: string): { x: number; y: number };
       flight(): { t: number; phase: string; playing: boolean; speed: number };
       exhaust(id: string): boolean;
+      frames(): number;
     };
   }
 }
@@ -39,6 +41,17 @@ function el<T extends HTMLElement>(selector: string): T {
 const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 const store = createStore(initialState(rocket, motionQuery.matches), createReducer(rocket));
 motionQuery.addEventListener('change', (e) => store.dispatch({ type: 'setReducedMotion', value: e.matches }));
+
+const panel = mountPanel({
+  panel: el('[data-panel]'),
+  header: el('[data-panel-header]'),
+  toggle: el('[data-panel-toggle]'),
+  toggleLabel: el('[data-panel-toggle-label]'),
+  body: el('[data-panel-body]'),
+});
+store.subscribe((s, prev) => {
+  if (s.selected !== null && s.selected !== prev.selected) panel.makeRoomForCard();
+});
 
 mountStatusStrip({
   vehicle: el('[data-vehicle-name]'),
@@ -77,6 +90,7 @@ const loading = el('[data-loading]');
 
 function startScene(): void {
   const viewer = new Viewer(el('[data-canvas-host]'));
+  panel.onInset((px) => viewer.setBottomInset(px));
   const rig = new RocketRig(rocket, buildPlaceholderRocket(rocket), viewer, store);
   viewer.scene.add(rig.model);
 
@@ -117,6 +131,7 @@ function startScene(): void {
       selected: () => store.get().selected,
       flight: () => ({ ...store.get().flight }),
       exhaust: (id) => flight.isExhausting(id),
+      frames: () => viewer.frames,
       screenPoint: (id) => {
         const p = rig.partBounds(id).getCenter(new Vector3()).project(viewer.camera);
         const rect = viewer.renderer.domElement.getBoundingClientRect();

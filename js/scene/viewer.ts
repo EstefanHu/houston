@@ -20,6 +20,9 @@ export class Viewer {
 
   private readonly tickers = new Set<Ticker>();
   private frame = 0;
+  private bottomInset = 0;
+  /** Frames drawn so far; lets tests check that nothing renders while idle. */
+  frames = 0;
   private last = 0;
   private readonly firstFrame: Promise<void>;
   private resolveFirstFrame!: () => void;
@@ -61,11 +64,23 @@ export class Viewer {
     this.requestRender();
   }
 
+  /**
+   * Tells the viewer how many pixels at the bottom are covered (by the phone bottom sheet).
+   * The image shifts up by half that, so the scene stays centred in the visible part.
+   */
+  setBottomInset(px: number): void {
+    this.bottomInset = px;
+    this.resize();
+  }
+
   private resize(): void {
     const { clientWidth: w, clientHeight: h } = this.host;
     if (w === 0 || h === 0) return;
     this.renderer.setSize(w, h, false);
     this.camera.aspect = w / h;
+    const shift = Math.min(this.bottomInset, h * 0.6) / 2;
+    if (shift > 0) this.camera.setViewOffset(w, h, 0, shift, w, h);
+    else this.camera.clearViewOffset();
     this.camera.updateProjectionMatrix();
     this.requestRender();
   }
@@ -79,6 +94,7 @@ export class Viewer {
       if (!tick(dt)) this.tickers.delete(tick);
     }
     this.renderer.render(this.scene, this.camera);
+    this.frames++;
     this.resolveFirstFrame();
     if (this.tickers.size > 0) this.requestRender();
     else this.last = 0;

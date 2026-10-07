@@ -64,17 +64,6 @@ test('with reduced motion, the home button jumps instead of easing', async ({ pa
   expect(distance(await cameraPosition(page), home)).toBeLessThan(0.01);
 });
 
-test('on a phone-width screen the panel sits below the viewport', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 800 });
-  await openApp(page);
-
-  const viewport = await page.getByRole('region', { name: '3D view of the rocket' }).boundingBox();
-  const panel = await page.getByRole('complementary', { name: 'Control panel' }).boundingBox();
-  expect(viewport && panel).toBeTruthy();
-  expect(panel!.y).toBeGreaterThanOrEqual(viewport!.y + viewport!.height - 1);
-  expect(panel!.width).toBeCloseTo(390, 0);
-});
-
 test('without WebGL, a text notice replaces the 3D view', async ({ page }) => {
   // addInitScript runs in the page before any of the app's code. Here it makes every
   // WebGL request fail, as on a browser or device without WebGL support.
