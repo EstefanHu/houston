@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { descendantsOf } from '../data/parts';
 import type { PartId, Rocket } from '../data/parts';
 import { approach, explodeOffsetAt } from '../motion/explode';
-import { partPoseAt, stackAltitudeAt } from '../motion/timeline';
+import { altitudeAt, partPoseAt } from '../motion/timeline';
 import type { RocketStore } from '../state/store';
 import type { Viewer } from './viewer';
 
@@ -20,13 +20,15 @@ const isRenderable = (o: THREE.Object3D): boolean =>
  */
 export class RocketRig {
   readonly objects = new Map<PartId, THREE.Object3D>();
-  private readonly assembled = new Map<PartId, { position: THREE.Vector3; quaternion: THREE.Quaternion }>();
+  private readonly assembled = new Map<PartId, { position: THREE.Vector3; quaternion: THREE.Quaternion; scale: THREE.Vector3 }>();
   private readonly own = new Map<PartId, THREE.Object3D[]>();
   private readonly ownerOf = new Map<THREE.Object3D, PartId>();
   /** Original materials of currently highlighted objects, restored on deselect. */
   private readonly originals = new Map<Renderable, Renderable['material']>();
   private readonly highlightCache = new WeakMap<THREE.Material, THREE.Material>();
   private readonly settleListeners = new Set<(explode: number) => void>();
+  /** Parts currently separated from the stack (as of the last applyTransforms). */
+  private readonly detached = new Set<PartId>();
   /** The explode factor currently on screen; eases toward the store's value. */
   private shownExplode: number;
 
@@ -43,7 +45,7 @@ export class RocketRig {
         continue;
       }
       this.objects.set(part.id, obj);
-      this.assembled.set(part.id, { position: obj.position.clone(), quaternion: obj.quaternion.clone() });
+      this.assembled.set(part.id, { position: obj.position.clone(), quaternion: obj.quaternion.clone(), scale: obj.scale.clone() });
     }
 
     const partObjects = new Set(this.objects.values());
@@ -101,6 +103,21 @@ export class RocketRig {
   /** World-space bounds of a part and its sub-parts. */
   partBounds(id: PartId): THREE.Box3 {
     return this.boundsOf([id, ...descendantsOf(this.rocket.parts, id)]);
+  }
+
+  /**
+   * Bounds for the chase camera to centre on: the part and the sub-parts still attached to
+   * it. A jettisoned nose cone drifting away shouldn't drag the camera with it.
+   */
+  attachedBounds(id: PartId): THREE.Box3 {
+    const parentOf = new Map(this.rocket.parts.map((p) => [p.id, p.parent]));
+    const attached = (d: PartId): boolean => {
+      for (let a: PartId | null = d; a !== null && a !== id; a = parentOf.get(a) ?? null) {
+        if (this.detached.has(a)) return false;
+      }
+      return true;
+    };
+    return this.boundsOf([id, ...descendantsOf(this.rocket.parts, id).filter(attached)]);
   }
 
   private boundsOf(ids: PartId[]): THREE.Box3 {
@@ -167,25 +184,31 @@ export class RocketRig {
   private applyTransforms(): void {
     const { flight } = this.store.get();
     const inFlight = flight.phase !== 'idle';
-    const spin = new THREE.Quaternion();
+    const altitude = inFlight ? altitudeAt(this.rocket.flight, flight.t) : 0;
+    const extra = new THREE.Quaternion();
     const euler = new THREE.Euler();
+    this.detached.clear();
     for (const part of this.rocket.parts) {
       const obj = this.objects.get(part.id);
       const base = this.assembled.get(part.id);
       if (!obj || !base) continue;
       const [x, y, z] = explodeOffsetAt(part, this.shownExplode);
-      obj.position.set(base.position.x + x, base.position.y + y, base.position.z + z);
-      obj.quaternion.copy(base.quaternion);
-      if (inFlight) {
-        const pose = partPoseAt(part, flight.t);
-        if (pose.detached) {
-          obj.position.add(new THREE.Vector3(...pose.offset));
-          obj.quaternion.multiply(spin.setFromEuler(euler.set(...pose.rotation)));
-        }
-      }
+      // On the pad, poses are the pre-launch state (legs stowed, parachutes packed).
+      const pose = partPoseAt(part, inFlight ? flight.t : -Infinity);
+      // World-frame tracks are relative to the pad, so take the stack's climb back out.
+      // (This assumes the part's parents are still riding the stack.)
+      const lift = pose.frame === 'world' ? altitude : 0;
+      if (pose.detached) this.detached.add(part.id);
+      obj.position.set(
+        base.position.x + x + pose.offset[0],
+        base.position.y + y + pose.offset[1] - lift,
+        base.position.z + z + pose.offset[2],
+      );
+      obj.quaternion.copy(base.quaternion).multiply(extra.setFromEuler(euler.set(...pose.rotation)));
+      obj.scale.set(base.scale.x * pose.scale[0], base.scale.y * pose.scale[1], base.scale.z * pose.scale[2]);
     }
     if (inFlight) {
-      this.model.position.y = stackAltitudeAt(flight.t);
+      this.model.position.y = altitude;
     } else {
       this.model.position.y = 0;
       this.model.position.y = Math.max(0, -this.bounds().min.y);

@@ -21,7 +21,8 @@
   <body>
     <header class="status-strip">
       <span class="status-strip__brand">HOUSTON</span>
-      <span class="status-strip__vehicle" data-vehicle-name></span>
+      <label class="sr-only" for="rocket-picker">Rocket</label>
+      <select class="status-strip__picker" id="rocket-picker" data-rocket-picker></select>
       <span class="status-strip__phase" data-mission-phase aria-label="Flight phase"></span>
       <span class="status-strip__timer" data-mission-timer aria-label="Mission timer">T-00:00</span>
     </header>
@@ -41,7 +42,7 @@
         <button class="viewport__home" type="button" data-home aria-label="Reset view" title="Reset view">⌂</button>
         <div class="loading" data-loading role="status">
           <div class="loading__spinner" aria-hidden="true"></div>
-          <p>Loading rocket…</p>
+          <p data-loading-text>Loading rocket…</p>
         </div>
         <p class="viewport__notice" data-webgl-notice hidden>
           3D view unavailable: this browser could not start WebGL. The control panel still has all the content.
@@ -57,6 +58,7 @@
           </button>
         </div>
         <div class="panel__body" id="panel-body" data-panel-body>
+          <p class="panel__notice" role="status" data-rocket-notice hidden></p>
 
         <section class="panel__section" aria-labelledby="explode-heading">
           <h2 class="panel__heading" id="explode-heading">Explode</h2>
@@ -102,6 +104,15 @@
             <button class="button button--small" type="button" data-show-all>Show all</button>
           </div>
           <ul class="parts-tree" aria-labelledby="parts-heading" data-parts-tree></ul>
+        </section>
+
+        <section class="panel__section" aria-labelledby="about-heading">
+          <h2 class="panel__heading" id="about-heading" data-about-heading>About</h2>
+          <p class="about__summary" data-about-summary></p>
+          <div data-about-sources hidden>
+            <h3 class="about__subheading">Sources</h3>
+            <ul class="about__sources" data-about-sources-list></ul>
+          </div>
         </section>
 
         <p class="panel__hint">Click a part to learn about it. Drag to orbit, scroll or pinch to zoom, right-drag or two-finger drag to pan. Esc clears the selection.</p>

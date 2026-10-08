@@ -21,6 +21,7 @@ export class Viewer {
   private readonly tickers = new Set<Ticker>();
   private frame = 0;
   private bottomInset = 0;
+  private grid: THREE.GridHelper;
   /** Frames drawn so far; lets tests check that nothing renders while idle. */
   frames = 0;
   private last = 0;
@@ -41,11 +42,23 @@ export class Viewer {
     key.position.set(8, 14, 10);
     this.scene.add(key);
 
-    const grid = new THREE.GridHelper(40, 40, SCHEMATIC.gridCenter, SCHEMATIC.grid);
-    this.scene.add(grid);
+    this.grid = new THREE.GridHelper(40, 40, SCHEMATIC.gridCenter, SCHEMATIC.grid);
+    this.scene.add(this.grid);
 
     new ResizeObserver(() => this.resize()).observe(host);
     this.resize();
+  }
+
+  /**
+   * Sizes the floor grid to the rocket: about three rocket-heights across, 40 cells. A
+   * sounding rocket and a Saturn V both get a grid that reads at their scale.
+   */
+  fitGrid(rocketHeight: number): void {
+    this.scene.remove(this.grid);
+    this.grid.dispose();
+    this.grid = new THREE.GridHelper(Math.max(4, Math.round(rocketHeight * 3)), 40, SCHEMATIC.gridCenter, SCHEMATIC.grid);
+    this.scene.add(this.grid);
+    this.requestRender();
   }
 
   /** Resolves after the first frame has been drawn, so the loading screen can go. */

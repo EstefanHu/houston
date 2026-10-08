@@ -25,8 +25,7 @@ launch vehicle are, how they fit together, and what happens to each part during 
 
 - User accounts, saved sessions, or any server-side component.
 - Physically accurate simulation. The flight is a scripted, illustrative timeline, not an orbital mechanics model.
-- VR/AR. three.js supports WebXR, so this stays a natural future extension (see §10).
-- More than one rocket model. The data model allows more, but v1 ships one.
+- VR/AR. three.js supports WebXR, so this stays a natural future extension (see §11).
 
 ## 3. User experience
 
@@ -48,6 +47,7 @@ launch vehicle are, how they fit together, and what happens to each part during 
 - The **info card** floats over the top-left of the viewport rather than sitting in the panel, so opening it doesn't push the parts tree around.
 - **Flight** sits above the parts tree so Launch is visible without scrolling.
 - Mission-control styling: dark UI, monospace numerals, a status strip with the mission timer.
+- **Rocket picker:** a native `<select>` in the status strip. Choosing a rocket sets `?rocket=<id>` and reloads, so every rocket starts fresh and has a shareable link. An unknown id falls back to Houston-1 with a short notice. The panel's About section shows the rocket's summary and sources.
 - **Schematic look** in the viewport: a blueprint-style background with a faint grid, flat-shaded parts with crisp edge outlines (`EdgesGeometry`), and a distinct outline colour for the selected part.
 
 ### Interactions
@@ -121,7 +121,7 @@ flowchart LR
         Cam[CameraRig]
         Flight[FlightDirector]
     end
-    Data[(rocket.json)] --> Store
+    Data[(rockets/*.json)] --> Store
     Panel -- actions --> Store
     Store -- subscribe --> Panel & Card & Strip
     Store -- subscribe --> Rig & Cam & Flight
@@ -135,9 +135,7 @@ The store is hand-rolled at roughly 50 lines, has no dependencies, and is easy t
 
 ```ts
 export type PartId = string;
-export type FlightPhase =
-  | 'idle' | 'countdown' | 'ascent' | 'stage-sep'
-  | 'second-stage' | 'fairing-sep' | 'orbit' | 'aborted';
+export type FlightPhase = string;  // 'idle' | 'aborted' | a phase id from the rocket's timeline
 
 export interface RocketState {
   explode: number;                 // 0..1
@@ -165,33 +163,56 @@ touch only what changed, which avoids per-frame work when the state has not move
 
 ### 4.3 Data model
 
-Parts and lessons live in `rocket.json`, separate from code, so people who don't write code can
-edit the educational content. The JSON is validated at load time against the `Part` type, using a
-small hand-written guard.
+Each rocket is one JSON file in `js/data/rockets/`, separate from code, so people who don't
+write code can edit the educational content. Files are validated at load time by a small
+hand-written guard (`parseRocket` in `js/data/parts.ts`) that reports errors with their path,
+for example `rocket.parts[3].stage: unknown stage "s9"`. Nothing about a particular rocket is
+hard-coded: its stages, parts, geometry, timeline and flight profile all come from its file.
 
 ```ts
-export interface Part {
-  id: PartId;                      // 'stage1.engine.cluster'
-  name: string;                    // 'First-stage engine cluster'
-  parent: PartId | null;           // tree structure
-  stage: 1 | 2 | 'payload';
-  meshName: string;                // object name in the model (glTF node name)
-  explodeOffset: [number, number, number];
-  info: {
-    summary: string;
-    purpose: string;
-    materials?: string[];
-    specs?: Record<string, string>; // { Thrust: '7,600 kN' }
-    funFact?: string;
+interface Rocket {
+  id: string; name: string; kind: string; summary: string;
+  stages: { id: string; label: string; color: string }[];   // 'S-IC · Stage 1'
+  parts: Part[];
+  flight: {
+    start: number; end: number;                  // seconds; negative start = countdown
+    events: TimelineEvent[];                     // captions, scrub-bar markers
+    altitude: [t: number, alt: number][];        // keyframes for the stack's climb (or fall)
   };
-  flightEvents?: {
-    event: 'separate' | 'jettison' | 'ignite' | 'shutdown';
-    t: number;
-    velocity?: [number, number, number];
-    spin?: [number, number, number];
+  sources?: { title: string; url: string }[];
+}
+
+interface Part {
+  id: PartId; name: string; parent: PartId | null; // tree structure
+  stage: string;                                    // a stage id
+  meshName: string;                                 // object name in the model
+  explodeOffset: Vec3;
+  info: { summary; purpose; materials?; specs?; funFact? };
+  model?: { at: Vec3; shapes: Shape[] };            // placeholder geometry (see §5)
+  flightEvents?: {                                  // separate | jettison | ignite | shutdown | deploy
+    event; t; velocity?; spin?;                     // drift after separating
+    duration?; rotation?; scale?;                   // deploy: legs, fins, parachutes
   }[];
+  track?: { frame: 'stack' | 'world'; keys: { t; offset; rotation? }[] };  // keyframed path
+}
+
+interface TimelineEvent {
+  t: number; phase: string; phaseLabel: string; title: string; caption: string;
+  follow?: PartId | 'stack';                        // what the chase camera follows from here on
 }
 ```
+
+**Motion is a pure function of time.** A part's pose at `t` comes from its `track` (keyframes,
+smoothly interpolated with a monotone cubic so a landing never dips below the ground), or a
+constant drift after `separate`/`jettison`, plus any `deploy` animations. A `world`-frame track
+ignores the stack's climb, which is how a booster flies back to the pad. `isBurning` handles
+several ignite/shutdown pairs (boostback, entry and landing burns).
+
+**Scale.** One scene unit is about 4 m for every rocket, so sizes compare truthfully when you
+switch between them. The floor grid and camera framing adapt to each rocket's height.
+
+**Registry.** `js/data/rockets/index.ts` lists the fleet. Each file is loaded with a dynamic
+import only when chosen, and `?rocket=<id>` picks it (see §3, rocket picker).
 
 ### 4.4 Scene modules
 
@@ -214,9 +235,9 @@ houston/
 ├─ vite.config.ts
 ├─ js/
 │  ├─ main.ts               # bootstrap: data → store → scene → UI
-│  ├─ scene/                # viewer.ts, rocketRig.ts, placeholderRocket.ts, cameraRig.ts, picker.ts, flightDirector.ts
+│  ├─ scene/                # viewer.ts, rocketRig.ts, model.ts, cameraRig.ts, picker.ts, flightDirector.ts
 │  ├─ state/                # store.ts, reducer.ts, actions.ts
-│  ├─ data/                 # rocket.json, parts.ts (types + validation)
+│  ├─ data/                 # parts.ts (types + validation), rockets/*.json + index.ts (the fleet)
 │  ├─ motion/               # explode and flight-timeline math (pure)
 │  └─ ui/                   # panel.ts, partsTree.ts, infoCard.ts, flightControls.ts
 ├─ styles/                  # tokens.css, layout.css, panel.css
@@ -227,7 +248,7 @@ houston/
 
 ## 5. 3D asset pipeline
 
-- **Until a model exists**, `placeholderRocket.ts` builds the rocket in code from cylinders, cones and boxes, one object per part, named with the part's `meshName`. Everything else (explode, picking, flight) works the same against it.
+- **Placeholder geometry is data.** Each part's `model.shapes` (cylinders, boxes, lathe profiles for nose cones and fairing halves, with an optional `repeat` around the axis for engine clusters and fins) is built by `js/scene/model.ts`, one object per part, named with its `meshName`. Everything else (explode, picking, flight) works the same against it, and against a real GLB later.
 - **Real model:** model in Blender, or start from a CC-BY/CC0 model with the licence recorded in `CREDITS.md`, and export as **GLB** to `public/models/`.
 - **Each component is a separately named object** whose name matches `Part.meshName`, with its **origin at the attach point** so explode offsets and separation look right. The hierarchy mirrors the parts tree. `RocketRig` warns in the console about any part whose mesh is missing.
 - Budget: about 150k triangles for the whole rocket. The schematic look needs few or no textures; keep any to 1k.
@@ -257,7 +278,22 @@ houston/
 | Time to interactive | under 4 s on broadband |
 | Per-frame JS | Nothing while the state is unchanged; work happens only on store diffs or when flight/camera is animating |
 
-## 9. Milestones
+## 9. Rocket fleet
+
+| Rocket | Type | What it teaches |
+|---|---|---|
+| Houston-1 (default) | Fictional satellite launcher | The basics: two stages, fairing, orbit |
+| Saturn V / Apollo 11 | Crewed Moon rocket | Three stages, launch escape tower, the Apollo spacecraft |
+| Falcon 9 | Reusable booster | Boostback, entry and landing burns; grid fins and legs |
+| Falcon Heavy | Heavy-lift, side boosters | Parallel staging; side boosters landing together |
+| Black Brant IX | Sounding rocket | Suborbital flight: up to apogee, back down by parachute |
+
+Real vehicles use real names and timings from primary sources, listed in each file's `sources`
+and shown in the panel's About section. They're drawn in the generic schematic style, without
+logos or liveries. Adding a rocket means adding a JSON file and a registry entry; the unit and
+browser tests pick it up automatically.
+
+## 10. Milestones
 
 | # | Milestone | Done when |
 |---|---|---|
@@ -268,10 +304,10 @@ houston/
 | M4 | Flight sim | Timeline, scrub, staging, captions, and chase camera. |
 | M5 | Polish + ship | Accessibility pass, reduced motion, mobile bottom sheet, performance pass, and public deploy (Vercel). |
 
-## 10. Open questions and risks
+## 11. Open questions and risks
 
-- **Rocket model source:** build our own or adapt a licensed one? This blocks M1 and decides how good the result looks.
+- **Rocket models:** all rockets use data-driven placeholder geometry. Real GLB models (built or licensed) would look better; each must follow the `meshName` contract in §5.
 - **Bundle size:** three.js core is roughly 150 KB gzipped. Import only the addons used (`OrbitControls`, `GLTFLoader`) to stay well inside the budget.
 - **In-scene UI for future VR:** a DOM panel doesn't work in WebXR. If VR becomes a goal, the panel would need a 3D UI counterpart. Because the store is UI-agnostic, that only means adding another subscriber.
-- **Content authorship and accuracy:** who writes and fact-checks the part info and flight captions? Should the rocket be generic, or modelled on a real vehicle?
+- **Content accuracy:** the real-vehicle figures were checked against the sources in each file, but they deserve a review by someone who knows each vehicle. Times vary between flights; each rocket follows one representative mission.
 - **Low-end devices:** decide on a fallback if WebGL2 is unavailable. The current plan is a text-only panel with a notice.

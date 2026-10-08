@@ -29,7 +29,7 @@ export function explode(page: Page): Promise<number> {
 }
 
 /** Reads a part's local position and whether its geometry is showing in 3D. */
-export function part(page: Page, id: string): Promise<{ position: Vec3; shown: boolean; highlighted: boolean }> {
+export function part(page: Page, id: string): Promise<{ position: Vec3; world: Vec3; rotation: Vec3; shown: boolean; highlighted: boolean }> {
   return page.evaluate(([partId, missing]) => {
     if (!window.houstonTestHooks) throw new Error(missing);
     return window.houstonTestHooks.part(partId);

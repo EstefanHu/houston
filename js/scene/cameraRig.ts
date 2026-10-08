@@ -10,6 +10,8 @@ const EASE_SECONDS = 0.6;
 export class CameraRig {
   readonly controls: OrbitControls;
   private dragging = false;
+  /** The camera move in progress, if any. A new move replaces it; shift() moves it along. */
+  private ease: { fromPos: THREE.Vector3; toPos: THREE.Vector3; fromTarget: THREE.Vector3; toTarget: THREE.Vector3 } | null = null;
   private homeView = { position: new THREE.Vector3(), target: new THREE.Vector3() };
 
   constructor(
@@ -47,9 +49,20 @@ export class CameraRig {
     this.controls.maxDistance = distance * 3;
   }
 
-  /** Returns to the default view. `offset` shifts it, e.g. to wherever the rocket has flown. */
-  home(animate = true, offset: THREE.Vector3 = new THREE.Vector3()): void {
-    this.moveTo(this.homeView.position.clone().add(offset), this.homeView.target.clone().add(offset), animate);
+  /** Returns to the default view. */
+  home(animate = true): void {
+    this.homeAround(this.homeView.target, animate);
+  }
+
+  /** The default view's direction and distance, centred on `target` (e.g. a rocket in flight). */
+  homeAround(target: THREE.Vector3, animate = true): void {
+    const offset = this.homeView.position.clone().sub(this.homeView.target);
+    this.moveTo(target.clone().add(offset), target.clone(), animate);
+  }
+
+  /** The point the default view looks at. */
+  homeTarget(): THREE.Vector3 {
+    return this.homeView.target.clone();
   }
 
   /** Moves camera and orbit target together, keeping the view: used to follow the rocket. */
@@ -57,6 +70,8 @@ export class CameraRig {
     if (delta.lengthSq() === 0) return;
     this.viewer.camera.position.add(delta);
     this.controls.target.add(delta);
+    // Keep an ease in progress heading for the moved target, or it would undo the shift.
+    if (this.ease) for (const v of Object.values(this.ease)) v.add(delta);
     this.viewer.requestRender();
   }
 
@@ -86,6 +101,7 @@ export class CameraRig {
   private moveTo(position: THREE.Vector3, target: THREE.Vector3, animate: boolean): void {
     this.settle();
     const cam = this.viewer.camera;
+    this.ease = null;
     if (!animate || this.reducedMotion()) {
       cam.position.copy(position);
       this.controls.target.copy(target);
@@ -93,15 +109,22 @@ export class CameraRig {
       this.viewer.requestRender();
       return;
     }
-    const fromPos = cam.position.clone();
-    const fromTarget = this.controls.target.clone();
+    const ease = {
+      fromPos: cam.position.clone(),
+      toPos: position.clone(),
+      fromTarget: this.controls.target.clone(),
+      toTarget: target.clone(),
+    };
+    this.ease = ease;
     let elapsed = 0;
     this.viewer.addTicker((dt) => {
+      if (this.ease !== ease) return false; // replaced by a newer move
       elapsed += dt;
       const k = smoothstep(elapsed / EASE_SECONDS);
-      cam.position.lerpVectors(fromPos, position, k);
-      this.controls.target.lerpVectors(fromTarget, target, k);
+      cam.position.lerpVectors(ease.fromPos, ease.toPos, k);
+      this.controls.target.lerpVectors(ease.fromTarget, ease.toTarget, k);
       cam.lookAt(this.controls.target);
+      if (k >= 1) this.ease = null;
       return k < 1;
     });
   }

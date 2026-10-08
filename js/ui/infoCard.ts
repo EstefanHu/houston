@@ -10,8 +10,6 @@ export interface InfoCardElements {
   status: HTMLElement;              // visually hidden live region
 }
 
-const STAGE_LABEL: Record<Part['stage'], string> = { 1: 'Stage 1', 2: 'Stage 2', payload: 'Payload' };
-
 function h<K extends keyof HTMLElementTagNameMap>(tag: K, className: string, text?: string): HTMLElementTagNameMap[K] {
   const node = document.createElement(tag);
   node.className = className;
@@ -52,6 +50,7 @@ function renderBody(part: Part, hidden: boolean): DocumentFragment {
 /** Shows the selected part's info card; × and Esc clear the selection. */
 export function mountInfoCard(els: InfoCardElements, rocket: Rocket, store: RocketStore): void {
   const byId = new Map(rocket.parts.map((p) => [p.id, p]));
+  const stageLabel = new Map(rocket.stages.map((s) => [s.id, s.label]));
   const clear = () => store.dispatch({ type: 'select', id: null });
 
   els.close.addEventListener('click', clear);
@@ -65,7 +64,7 @@ export function mountInfoCard(els: InfoCardElements, rocket: Rocket, store: Rock
     els.card.hidden = !part;
     els.status.textContent = part ? `Selected ${part.name}` : '';
     if (!part) return;
-    els.stage.textContent = STAGE_LABEL[part.stage];
+    els.stage.textContent = stageLabel.get(part.stage) ?? '';
     els.title.textContent = part.name;
     els.body.replaceChildren(renderBody(part, hidden.has(part.id)));
     els.body.scrollTop = 0;

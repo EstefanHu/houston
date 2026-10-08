@@ -1,0 +1,1870 @@
+{
+  "id": "falcon-heavy",
+  "name": "Falcon Heavy",
+  "kind": "Heavy-lift, side boosters",
+  "summary": "Three Falcon 9-derived cores side by side, 70 m tall and 12.2 m wide, with 27 Merlin engines. This shows a flight like its second launch (Arabsat-6A, April 2019), when both side boosters flew back and landed.",
+  "stages": [
+    {
+      "id": "side",
+      "label": "Side boosters",
+      "color": "#8fb3d9"
+    },
+    {
+      "id": "core",
+      "label": "Centre core",
+      "color": "#9bbbdc"
+    },
+    {
+      "id": "s2",
+      "label": "Stage 2",
+      "color": "#a9c4e0"
+    },
+    {
+      "id": "payload",
+      "label": "Payload",
+      "color": "#c7d8ea"
+    }
+  ],
+  "parts": [
+    {
+      "id": "core",
+      "name": "Centre core",
+      "parent": null,
+      "stage": "core",
+      "meshName": "CenterCore",
+      "explodeOffset": [0, -4, 0],
+      "info": {
+        "summary": "The middle booster: a strengthened Falcon 9 first stage that carries the second stage and payload.",
+        "purpose": "Throttles down early on to save propellant, so it keeps burning for about a minute after the side boosters separate.",
+        "specs": {
+          "Engines": "9 × Merlin 1D",
+          "Burn time": "about 3½ minutes"
+        },
+        "funFact": "Because it flies faster and farther than the side boosters, the centre core can't fly home. It lands on a drone ship far out at sea instead, or is expended."
+      },
+      "model": {
+        "at": [0, 0, 0],
+        "shapes": []
+      },
+      "flightEvents": [
+        {
+          "event": "separate",
+          "t": 215,
+          "velocity": [0.3, -1.2, 0],
+          "spin": [0.03, 0, 0.04]
+        }
+      ]
+    },
+    {
+      "id": "core.engines",
+      "name": "Merlin engines (octaweb)",
+      "parent": "core",
+      "stage": "core",
+      "meshName": "CenterCore_Engines",
+      "explodeOffset": [0, -1.2, 0],
+      "info": {
+        "summary": "Nine Merlin 1D engines: eight in a ring around a centre engine, in a structure called the octaweb.",
+        "purpose": "Burn RP-1 kerosene with liquid oxygen. Some can be relit several times, which is what makes landing possible: three for the boostback and entry burns, one for the landing burn.",
+        "specs": {
+          "Engines": "9 × Merlin 1D",
+          "Thrust at liftoff": "7,607 kN total (about 845 kN each)"
+        },
+        "funFact": "The engines are throttleable. Even so, one Merlin at its lowest setting is more than the near-empty booster weighs, so it can't hover. The landing burn has to reach zero speed exactly at the ground."
+      },
+      "model": {
+        "at": [0, 0, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 0.04,
+            "rBottom": 0.08,
+            "h": 0.3,
+            "open": true,
+            "at": [0, 0, 0],
+            "segments": 16
+          },
+          {
+            "type": "cylinder",
+            "rTop": 0.04,
+            "rBottom": 0.08,
+            "h": 0.3,
+            "open": true,
+            "at": [0, 0, 0],
+            "segments": 16,
+            "repeat": {
+              "count": 8,
+              "radius": 0.28
+            }
+          },
+          {
+            "type": "cylinder",
+            "rTop": 0.4625,
+            "rBottom": 0.4625,
+            "h": 0.15,
+            "at": [0, 0.3, 0]
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "ignite",
+          "t": -3
+        },
+        {
+          "event": "shutdown",
+          "t": 211
+        }
+      ]
+    },
+    {
+      "id": "core.fuel",
+      "name": "RP-1 tank",
+      "parent": "core",
+      "stage": "core",
+      "meshName": "CenterCore_Fuel",
+      "explodeOffset": [0, -0.4, 0],
+      "info": {
+        "summary": "The lower tank, holding RP-1 kerosene.",
+        "purpose": "Feeds fuel to the Merlins. On a landing flight, some of it is held back for the return burns.",
+        "materials": [
+          "Aluminium-lithium alloy"
+        ]
+      },
+      "model": {
+        "at": [0, 0.45, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 0.4625,
+            "rBottom": 0.4625,
+            "h": 3.6,
+            "at": [0, 0, 0]
+          }
+        ]
+      }
+    },
+    {
+      "id": "core.lox",
+      "name": "Liquid-oxygen tank",
+      "parent": "core",
+      "stage": "core",
+      "meshName": "CenterCore_Lox",
+      "explodeOffset": [0, 0.4, 0],
+      "info": {
+        "summary": "The upper tank, holding liquid oxygen chilled below its normal boiling point so more fits in.",
+        "purpose": "Supplies the oxidizer. Chilling the propellants makes them denser, so the tanks hold more.",
+        "materials": [
+          "Aluminium-lithium alloy"
+        ]
+      },
+      "model": {
+        "at": [0, 4.05, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 0.4625,
+            "rBottom": 0.4625,
+            "h": 5.4,
+            "at": [0, 0, 0]
+          }
+        ]
+      }
+    },
+    {
+      "id": "core.interstage",
+      "name": "Interstage",
+      "parent": "core",
+      "stage": "core",
+      "meshName": "CenterCore_Interstage",
+      "explodeOffset": [0, 0.9, 0],
+      "info": {
+        "summary": "The black composite section at the top of the booster.",
+        "purpose": "Joins the two stages, covers the second stage's engine nozzle, and carries the grid fins and the pneumatic pushers that separate the stages.",
+        "materials": [
+          "Carbon-fibre composite"
+        ]
+      },
+      "model": {
+        "at": [0, 9.45, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 0.4625,
+            "rBottom": 0.4625,
+            "h": 1.6,
+            "open": true,
+            "at": [0, 0, 0]
+          }
+        ]
+      }
+    },
+    {
+      "id": "core.legs",
+      "name": "Landing legs",
+      "parent": "core",
+      "stage": "core",
+      "meshName": "CenterCore_Legs",
+      "explodeOffset": [0, 0, 0],
+      "info": {
+        "summary": "Four folding legs, stowed flat against the booster during launch.",
+        "purpose": "Swing down a few seconds before touchdown and absorb the landing.",
+        "materials": [
+          "Carbon fibre",
+          "Aluminium honeycomb"
+        ]
+      },
+      "model": {
+        "at": [0, 0, 0],
+        "shapes": []
+      }
+    },
+    {
+      "id": "core.leg1",
+      "name": "Landing leg 1",
+      "parent": "core.legs",
+      "stage": "core",
+      "meshName": "CenterCore_Leg1",
+      "explodeOffset": [0.6, 0, 0.0],
+      "info": {
+        "summary": "One of the four landing legs (east side).",
+        "purpose": "Hinged at its foot: a pneumatic system swings it down and out just before touchdown."
+      },
+      "model": {
+        "at": [0.5125, 0.45, 0.0],
+        "shapes": [
+          {
+            "type": "box",
+            "size": [0.06, 2.4, 0.14],
+            "at": [0, 1.2, 0]
+          }
+        ]
+      }
+    },
+    {
+      "id": "core.leg2",
+      "name": "Landing leg 2",
+      "parent": "core.legs",
+      "stage": "core",
+      "meshName": "CenterCore_Leg2",
+      "explodeOffset": [-0.6, 0, 0.0],
+      "info": {
+        "summary": "One of the four landing legs (west side).",
+        "purpose": "Hinged at its foot: a pneumatic system swings it down and out just before touchdown."
+      },
+      "model": {
+        "at": [-0.5125, 0.45, 0.0],
+        "shapes": [
+          {
+            "type": "box",
+            "size": [0.06, 2.4, 0.14],
+            "at": [0, 1.2, 0]
+          }
+        ]
+      }
+    },
+    {
+      "id": "core.leg3",
+      "name": "Landing leg 3",
+      "parent": "core.legs",
+      "stage": "core",
+      "meshName": "CenterCore_Leg3",
+      "explodeOffset": [0.0, 0, 0.6],
+      "info": {
+        "summary": "One of the four landing legs (north side).",
+        "purpose": "Hinged at its foot: a pneumatic system swings it down and out just before touchdown."
+      },
+      "model": {
+        "at": [0.0, 0.45, 0.5125],
+        "shapes": [
+          {
+            "type": "box",
+            "size": [0.14, 2.4, 0.06],
+            "at": [0, 1.2, 0]
+          }
+        ]
+      }
+    },
+    {
+      "id": "core.leg4",
+      "name": "Landing leg 4",
+      "parent": "core.legs",
+      "stage": "core",
+      "meshName": "CenterCore_Leg4",
+      "explodeOffset": [0.0, 0, -0.6],
+      "info": {
+        "summary": "One of the four landing legs (south side).",
+        "purpose": "Hinged at its foot: a pneumatic system swings it down and out just before touchdown."
+      },
+      "model": {
+        "at": [0.0, 0.45, -0.5125],
+        "shapes": [
+          {
+            "type": "box",
+            "size": [0.14, 2.4, 0.06],
+            "at": [0, 1.2, 0]
+          }
+        ]
+      }
+    },
+    {
+      "id": "core.gridfins",
+      "name": "Grid fins",
+      "parent": "core",
+      "stage": "core",
+      "meshName": "CenterCore_GridFins",
+      "explodeOffset": [0, 0, 0],
+      "info": {
+        "summary": "Four lattice-shaped fins near the top of the booster, folded up during launch.",
+        "purpose": "Unfold after separation and steer the booster as it falls back through the atmosphere, a bit like the flaps on a plane.",
+        "materials": [
+          "Titanium"
+        ],
+        "funFact": "Grid fins work even when the booster is falling backwards at supersonic speed, which ordinary flat fins struggle with."
+      },
+      "model": {
+        "at": [0, 0, 0],
+        "shapes": []
+      }
+    },
+    {
+      "id": "core.fin1",
+      "name": "Grid fin 1",
+      "parent": "core.gridfins",
+      "stage": "core",
+      "meshName": "CenterCore_GridFin1",
+      "explodeOffset": [0.5, 0.3, 0.0],
+      "info": {
+        "summary": "One of the four titanium grid fins (east side).",
+        "purpose": "Each fin swivels independently to steer the falling booster."
+      },
+      "model": {
+        "at": [0.4925, 10.6, 0.0],
+        "shapes": [
+          {
+            "type": "box",
+            "size": [0.04, 0.38, 0.32],
+            "at": [0, 0.19, 0]
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "deploy",
+          "t": 218,
+          "duration": 2,
+          "rotation": [0, 0, -1.5707963267948966]
+        }
+      ]
+    },
+    {
+      "id": "core.fin2",
+      "name": "Grid fin 2",
+      "parent": "core.gridfins",
+      "stage": "core",
+      "meshName": "CenterCore_GridFin2",
+      "explodeOffset": [-0.5, 0.3, 0.0],
+      "info": {
+        "summary": "One of the four titanium grid fins (west side).",
+        "purpose": "Each fin swivels independently to steer the falling booster."
+      },
+      "model": {
+        "at": [-0.4925, 10.6, 0.0],
+        "shapes": [
+          {
+            "type": "box",
+            "size": [0.04, 0.38, 0.32],
+            "at": [0, 0.19, 0]
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "deploy",
+          "t": 218,
+          "duration": 2,
+          "rotation": [0, 0, 1.5707963267948966]
+        }
+      ]
+    },
+    {
+      "id": "core.fin3",
+      "name": "Grid fin 3",
+      "parent": "core.gridfins",
+      "stage": "core",
+      "meshName": "CenterCore_GridFin3",
+      "explodeOffset": [0.0, 0.3, 0.5],
+      "info": {
+        "summary": "One of the four titanium grid fins (north side).",
+        "purpose": "Each fin swivels independently to steer the falling booster."
+      },
+      "model": {
+        "at": [0.0, 10.6, 0.4925],
+        "shapes": [
+          {
+            "type": "box",
+            "size": [0.32, 0.38, 0.04],
+            "at": [0, 0.19, 0]
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "deploy",
+          "t": 218,
+          "duration": 2,
+          "rotation": [1.5707963267948966, 0, 0]
+        }
+      ]
+    },
+    {
+      "id": "core.fin4",
+      "name": "Grid fin 4",
+      "parent": "core.gridfins",
+      "stage": "core",
+      "meshName": "CenterCore_GridFin4",
+      "explodeOffset": [0.0, 0.3, -0.5],
+      "info": {
+        "summary": "One of the four titanium grid fins (south side).",
+        "purpose": "Each fin swivels independently to steer the falling booster."
+      },
+      "model": {
+        "at": [0.0, 10.6, -0.4925],
+        "shapes": [
+          {
+            "type": "box",
+            "size": [0.32, 0.38, 0.04],
+            "at": [0, 0.19, 0]
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "deploy",
+          "t": 218,
+          "duration": 2,
+          "rotation": [-1.5707963267948966, 0, 0]
+        }
+      ]
+    },
+    {
+      "id": "left",
+      "name": "Left side booster",
+      "parent": null,
+      "stage": "side",
+      "meshName": "LeftBooster",
+      "explodeOffset": [-2.5, -1, 0],
+      "info": {
+        "summary": "The left side booster: essentially a Falcon 9 first stage with a nose cone, strapped to the centre core.",
+        "purpose": "Together with the centre core, the two side boosters give 27 engines at liftoff. They burn out first, separate and fly back to land at Cape Canaveral.",
+        "specs": {
+          "Engines": "9 × Merlin 1D",
+          "Diameter": "3.7 m"
+        },
+        "funFact": "On Falcon Heavy's first two flights, the two side boosters landed side by side, seconds apart, at Landing Zones 1 and 2."
+      },
+      "model": {
+        "at": [-1.06, 0, 0],
+        "shapes": []
+      },
+      "track": {
+        "frame": "world",
+        "keys": [
+          {
+            "t": 154,
+            "offset": [0, 198.978, 0]
+          },
+          {
+            "t": 158,
+            "offset": [-0.6, 203.978, -0.1],
+            "rotation": [0, 0, 0.6]
+          },
+          {
+            "t": 171,
+            "offset": [-1.2, 216.978, -0.25],
+            "rotation": [0, 0, 1.6]
+          },
+          {
+            "t": 210,
+            "offset": [-1.7999999999999998, 253.978, -0.5],
+            "rotation": [0, 0, 1.5]
+          },
+          {
+            "t": 250,
+            "offset": [-3.5999999999999996, 268.978, -0.5],
+            "rotation": [0, 0, 0.2]
+          },
+          {
+            "t": 310,
+            "offset": [-4.800000000000001, 228.978, -0.5],
+            "rotation": [0, 0, 0]
+          },
+          {
+            "t": 371,
+            "offset": [-5.699999999999999, 110, -0.5]
+          },
+          {
+            "t": 391,
+            "offset": [-6, 70, -0.5]
+          },
+          {
+            "t": 448,
+            "offset": [-6, 12, -0.5]
+          },
+          {
+            "t": 471,
+            "offset": [-6, 1.33, -0.5]
+          }
+        ]
+      }
+    },
+    {
+      "id": "left.engines",
+      "name": "Merlin engines (octaweb)",
+      "parent": "left",
+      "stage": "side",
+      "meshName": "LeftBooster_Engines",
+      "explodeOffset": [0, -1.2, 0],
+      "info": {
+        "summary": "Nine Merlin 1D engines: eight in a ring around a centre engine, in a structure called the octaweb.",
+        "purpose": "Burn RP-1 kerosene with liquid oxygen. Some can be relit several times, which is what makes landing possible: three for the boostback and entry burns, one for the landing burn.",
+        "specs": {
+          "Engines": "9 × Merlin 1D",
+          "Thrust at liftoff": "7,607 kN total (about 845 kN each)"
+        },
+        "funFact": "The engines are throttleable. Even so, one Merlin at its lowest setting is more than the near-empty booster weighs, so it can't hover. The landing burn has to reach zero speed exactly at the ground."
+      },
+      "model": {
+        "at": [0, 0, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 0.04,
+            "rBottom": 0.08,
+            "h": 0.3,
+            "open": true,
+            "at": [0, 0, 0],
+            "segments": 16
+          },
+          {
+            "type": "cylinder",
+            "rTop": 0.04,
+            "rBottom": 0.08,
+            "h": 0.3,
+            "open": true,
+            "at": [0, 0, 0],
+            "segments": 16,
+            "repeat": {
+              "count": 8,
+              "radius": 0.28
+            }
+          },
+          {
+            "type": "cylinder",
+            "rTop": 0.4625,
+            "rBottom": 0.4625,
+            "h": 0.15,
+            "at": [0, 0.3, 0]
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "ignite",
+          "t": -3
+        },
+        {
+          "event": "shutdown",
+          "t": 150
+        },
+        {
+          "event": "ignite",
+          "t": 171
+        },
+        {
+          "event": "shutdown",
+          "t": 210
+        },
+        {
+          "event": "ignite",
+          "t": 371
+        },
+        {
+          "event": "shutdown",
+          "t": 391
+        },
+        {
+          "event": "ignite",
+          "t": 448
+        },
+        {
+          "event": "shutdown",
+          "t": 471
+        }
+      ]
+    },
+    {
+      "id": "left.fuel",
+      "name": "RP-1 tank",
+      "parent": "left",
+      "stage": "side",
+      "meshName": "LeftBooster_Fuel",
+      "explodeOffset": [0, -0.4, 0],
+      "info": {
+        "summary": "The lower tank, holding RP-1 kerosene.",
+        "purpose": "Feeds fuel to the Merlins. On a landing flight, some of it is held back for the return burns.",
+        "materials": [
+          "Aluminium-lithium alloy"
+        ]
+      },
+      "model": {
+        "at": [0, 0.45, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 0.4625,
+            "rBottom": 0.4625,
+            "h": 3.6,
+            "at": [0, 0, 0]
+          }
+        ]
+      }
+    },
+    {
+      "id": "left.lox",
+      "name": "Liquid-oxygen tank",
+      "parent": "left",
+      "stage": "side",
+      "meshName": "LeftBooster_Lox",
+      "explodeOffset": [0, 0.4, 0],
+      "info": {
+        "summary": "The upper tank, holding liquid oxygen chilled below its normal boiling point so more fits in.",
+        "purpose": "Supplies the oxidizer. Chilling the propellants makes them denser, so the tanks hold more.",
+        "materials": [
+          "Aluminium-lithium alloy"
+        ]
+      },
+      "model": {
+        "at": [0, 4.05, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 0.4625,
+            "rBottom": 0.4625,
+            "h": 5.4,
+            "at": [0, 0, 0]
+          }
+        ]
+      }
+    },
+    {
+      "id": "left.nose",
+      "name": "Nose cone",
+      "parent": "left",
+      "stage": "side",
+      "meshName": "LeftBooster_Nose",
+      "explodeOffset": [0, 0.8, 0],
+      "info": {
+        "summary": "A composite nose cone in place of an interstage.",
+        "purpose": "Side boosters have nothing stacked on top, so a nose cone streamlines them. They're attached to the centre core along their sides instead."
+      },
+      "model": {
+        "at": [0, 9.45, 0],
+        "shapes": [
+          {
+            "type": "lathe",
+            "profile": [
+              [0.4625, 0.0],
+              [0.4568, 0.2503],
+              [0.4399, 0.4944],
+              [0.4121, 0.7264],
+              [0.3742, 0.9405],
+              [0.327, 1.1314],
+              [0.2719, 1.2944],
+              [0.21, 1.4256],
+              [0.1429, 1.5217],
+              [0.0724, 1.5803],
+              [0.0, 1.6]
+            ],
+            "at": [0, 0, 0],
+            "segments": 32
+          }
+        ]
+      }
+    },
+    {
+      "id": "left.legs",
+      "name": "Landing legs",
+      "parent": "left",
+      "stage": "side",
+      "meshName": "LeftBooster_Legs",
+      "explodeOffset": [0, 0, 0],
+      "info": {
+        "summary": "Four folding legs, stowed flat against the booster during launch.",
+        "purpose": "Swing down a few seconds before touchdown and absorb the landing.",
+        "materials": [
+          "Carbon fibre",
+          "Aluminium honeycomb"
+        ]
+      },
+      "model": {
+        "at": [0, 0, 0],
+        "shapes": []
+      }
+    },
+    {
+      "id": "left.leg1",
+      "name": "Landing leg 1",
+      "parent": "left.legs",
+      "stage": "side",
+      "meshName": "LeftBooster_Leg1",
+      "explodeOffset": [0.6, 0, 0.0],
+      "info": {
+        "summary": "One of the four landing legs (east side).",
+        "purpose": "Hinged at its foot: a pneumatic system swings it down and out just before touchdown."
+      },
+      "model": {
+        "at": [0.5125, 0.45, 0.0],
+        "shapes": [
+          {
+            "type": "box",
+            "size": [0.06, 2.4, 0.14],
+            "at": [0, 1.2, 0]
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "deploy",
+          "t": 463,
+          "duration": 3,
+          "rotation": [0, 0, -2.4]
+        }
+      ]
+    },
+    {
+      "id": "left.leg2",
+      "name": "Landing leg 2",
+      "parent": "left.legs",
+      "stage": "side",
+      "meshName": "LeftBooster_Leg2",
+      "explodeOffset": [-0.6, 0, 0.0],
+      "info": {
+        "summary": "One of the four landing legs (west side).",
+        "purpose": "Hinged at its foot: a pneumatic system swings it down and out just before touchdown."
+      },
+      "model": {
+        "at": [-0.5125, 0.45, 0.0],
+        "shapes": [
+          {
+            "type": "box",
+            "size": [0.06, 2.4, 0.14],
+            "at": [0, 1.2, 0]
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "deploy",
+          "t": 463,
+          "duration": 3,
+          "rotation": [0, 0, 2.4]
+        }
+      ]
+    },
+    {
+      "id": "left.leg3",
+      "name": "Landing leg 3",
+      "parent": "left.legs",
+      "stage": "side",
+      "meshName": "LeftBooster_Leg3",
+      "explodeOffset": [0.0, 0, 0.6],
+      "info": {
+        "summary": "One of the four landing legs (north side).",
+        "purpose": "Hinged at its foot: a pneumatic system swings it down and out just before touchdown."
+      },
+      "model": {
+        "at": [0.0, 0.45, 0.5125],
+        "shapes": [
+          {
+            "type": "box",
+            "size": [0.14, 2.4, 0.06],
+            "at": [0, 1.2, 0]
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "deploy",
+          "t": 463,
+          "duration": 3,
+          "rotation": [2.4, 0, 0]
+        }
+      ]
+    },
+    {
+      "id": "left.leg4",
+      "name": "Landing leg 4",
+      "parent": "left.legs",
+      "stage": "side",
+      "meshName": "LeftBooster_Leg4",
+      "explodeOffset": [0.0, 0, -0.6],
+      "info": {
+        "summary": "One of the four landing legs (south side).",
+        "purpose": "Hinged at its foot: a pneumatic system swings it down and out just before touchdown."
+      },
+      "model": {
+        "at": [0.0, 0.45, -0.5125],
+        "shapes": [
+          {
+            "type": "box",
+            "size": [0.14, 2.4, 0.06],
+            "at": [0, 1.2, 0]
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "deploy",
+          "t": 463,
+          "duration": 3,
+          "rotation": [-2.4, 0, 0]
+        }
+      ]
+    },
+    {
+      "id": "left.gridfins",
+      "name": "Grid fins",
+      "parent": "left",
+      "stage": "side",
+      "meshName": "LeftBooster_GridFins",
+      "explodeOffset": [0, 0, 0],
+      "info": {
+        "summary": "Four lattice-shaped fins near the top of the booster, folded up during launch.",
+        "purpose": "Unfold after separation and steer the booster as it falls back through the atmosphere, a bit like the flaps on a plane.",
+        "materials": [
+          "Titanium"
+        ],
+        "funFact": "Grid fins work even when the booster is falling backwards at supersonic speed, which ordinary flat fins struggle with."
+      },
+      "model": {
+        "at": [0, 0, 0],
+        "shapes": []
+      }
+    },
+    {
+      "id": "left.fin1",
+      "name": "Grid fin 1",
+      "parent": "left.gridfins",
+      "stage": "side",
+      "meshName": "LeftBooster_GridFin1",
+      "explodeOffset": [0.5, 0.3, 0.0],
+      "info": {
+        "summary": "One of the four titanium grid fins (east side).",
+        "purpose": "Each fin swivels independently to steer the falling booster."
+      },
+      "model": {
+        "at": [0.4925, 9.05, 0.0],
+        "shapes": [
+          {
+            "type": "box",
+            "size": [0.04, 0.38, 0.32],
+            "at": [0, 0.19, 0]
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "deploy",
+          "t": 157,
+          "duration": 2,
+          "rotation": [0, 0, -1.5707963267948966]
+        }
+      ]
+    },
+    {
+      "id": "left.fin2",
+      "name": "Grid fin 2",
+      "parent": "left.gridfins",
+      "stage": "side",
+      "meshName": "LeftBooster_GridFin2",
+      "explodeOffset": [-0.5, 0.3, 0.0],
+      "info": {
+        "summary": "One of the four titanium grid fins (west side).",
+        "purpose": "Each fin swivels independently to steer the falling booster."
+      },
+      "model": {
+        "at": [-0.4925, 9.05, 0.0],
+        "shapes": [
+          {
+            "type": "box",
+            "size": [0.04, 0.38, 0.32],
+            "at": [0, 0.19, 0]
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "deploy",
+          "t": 157,
+          "duration": 2,
+          "rotation": [0, 0, 1.5707963267948966]
+        }
+      ]
+    },
+    {
+      "id": "left.fin3",
+      "name": "Grid fin 3",
+      "parent": "left.gridfins",
+      "stage": "side",
+      "meshName": "LeftBooster_GridFin3",
+      "explodeOffset": [0.0, 0.3, 0.5],
+      "info": {
+        "summary": "One of the four titanium grid fins (north side).",
+        "purpose": "Each fin swivels independently to steer the falling booster."
+      },
+      "model": {
+        "at": [0.0, 9.05, 0.4925],
+        "shapes": [
+          {
+            "type": "box",
+            "size": [0.32, 0.38, 0.04],
+            "at": [0, 0.19, 0]
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "deploy",
+          "t": 157,
+          "duration": 2,
+          "rotation": [1.5707963267948966, 0, 0]
+        }
+      ]
+    },
+    {
+      "id": "left.fin4",
+      "name": "Grid fin 4",
+      "parent": "left.gridfins",
+      "stage": "side",
+      "meshName": "LeftBooster_GridFin4",
+      "explodeOffset": [0.0, 0.3, -0.5],
+      "info": {
+        "summary": "One of the four titanium grid fins (south side).",
+        "purpose": "Each fin swivels independently to steer the falling booster."
+      },
+      "model": {
+        "at": [0.0, 9.05, -0.4925],
+        "shapes": [
+          {
+            "type": "box",
+            "size": [0.32, 0.38, 0.04],
+            "at": [0, 0.19, 0]
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "deploy",
+          "t": 157,
+          "duration": 2,
+          "rotation": [-1.5707963267948966, 0, 0]
+        }
+      ]
+    },
+    {
+      "id": "right",
+      "name": "Right side booster",
+      "parent": null,
+      "stage": "side",
+      "meshName": "RightBooster",
+      "explodeOffset": [2.5, -1, 0],
+      "info": {
+        "summary": "The right side booster: essentially a Falcon 9 first stage with a nose cone, strapped to the centre core.",
+        "purpose": "Together with the centre core, the two side boosters give 27 engines at liftoff. They burn out first, separate and fly back to land at Cape Canaveral.",
+        "specs": {
+          "Engines": "9 × Merlin 1D",
+          "Diameter": "3.7 m"
+        },
+        "funFact": "On Falcon Heavy's first two flights, the two side boosters landed side by side, seconds apart, at Landing Zones 1 and 2."
+      },
+      "model": {
+        "at": [1.06, 0, 0],
+        "shapes": []
+      },
+      "track": {
+        "frame": "world",
+        "keys": [
+          {
+            "t": 154,
+            "offset": [0, 198.978, 0]
+          },
+          {
+            "t": 158,
+            "offset": [-0.6, 203.978, 0.1],
+            "rotation": [0, 0, 0.6]
+          },
+          {
+            "t": 171,
+            "offset": [-1.2, 216.978, 0.25],
+            "rotation": [0, 0, 1.6]
+          },
+          {
+            "t": 210,
+            "offset": [-0.6, 253.978, 0.5],
+            "rotation": [0, 0, 1.5]
+          },
+          {
+            "t": 250,
+            "offset": [-1.2, 268.978, 0.5],
+            "rotation": [0, 0, 0.2]
+          },
+          {
+            "t": 310,
+            "offset": [-1.6, 228.978, 0.5],
+            "rotation": [0, 0, 0]
+          },
+          {
+            "t": 371,
+            "offset": [-1.9, 110, 0.5]
+          },
+          {
+            "t": 391,
+            "offset": [-2, 70, 0.5]
+          },
+          {
+            "t": 448,
+            "offset": [-2, 12, 0.5]
+          },
+          {
+            "t": 471,
+            "offset": [-2, 1.33, 0.5]
+          }
+        ]
+      }
+    },
+    {
+      "id": "right.engines",
+      "name": "Merlin engines (octaweb)",
+      "parent": "right",
+      "stage": "side",
+      "meshName": "RightBooster_Engines",
+      "explodeOffset": [0, -1.2, 0],
+      "info": {
+        "summary": "Nine Merlin 1D engines: eight in a ring around a centre engine, in a structure called the octaweb.",
+        "purpose": "Burn RP-1 kerosene with liquid oxygen. Some can be relit several times, which is what makes landing possible: three for the boostback and entry burns, one for the landing burn.",
+        "specs": {
+          "Engines": "9 × Merlin 1D",
+          "Thrust at liftoff": "7,607 kN total (about 845 kN each)"
+        },
+        "funFact": "The engines are throttleable. Even so, one Merlin at its lowest setting is more than the near-empty booster weighs, so it can't hover. The landing burn has to reach zero speed exactly at the ground."
+      },
+      "model": {
+        "at": [0, 0, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 0.04,
+            "rBottom": 0.08,
+            "h": 0.3,
+            "open": true,
+            "at": [0, 0, 0],
+            "segments": 16
+          },
+          {
+            "type": "cylinder",
+            "rTop": 0.04,
+            "rBottom": 0.08,
+            "h": 0.3,
+            "open": true,
+            "at": [0, 0, 0],
+            "segments": 16,
+            "repeat": {
+              "count": 8,
+              "radius": 0.28
+            }
+          },
+          {
+            "type": "cylinder",
+            "rTop": 0.4625,
+            "rBottom": 0.4625,
+            "h": 0.15,
+            "at": [0, 0.3, 0]
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "ignite",
+          "t": -3
+        },
+        {
+          "event": "shutdown",
+          "t": 150
+        },
+        {
+          "event": "ignite",
+          "t": 171
+        },
+        {
+          "event": "shutdown",
+          "t": 210
+        },
+        {
+          "event": "ignite",
+          "t": 371
+        },
+        {
+          "event": "shutdown",
+          "t": 391
+        },
+        {
+          "event": "ignite",
+          "t": 448
+        },
+        {
+          "event": "shutdown",
+          "t": 471
+        }
+      ]
+    },
+    {
+      "id": "right.fuel",
+      "name": "RP-1 tank",
+      "parent": "right",
+      "stage": "side",
+      "meshName": "RightBooster_Fuel",
+      "explodeOffset": [0, -0.4, 0],
+      "info": {
+        "summary": "The lower tank, holding RP-1 kerosene.",
+        "purpose": "Feeds fuel to the Merlins. On a landing flight, some of it is held back for the return burns.",
+        "materials": [
+          "Aluminium-lithium alloy"
+        ]
+      },
+      "model": {
+        "at": [0, 0.45, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 0.4625,
+            "rBottom": 0.4625,
+            "h": 3.6,
+            "at": [0, 0, 0]
+          }
+        ]
+      }
+    },
+    {
+      "id": "right.lox",
+      "name": "Liquid-oxygen tank",
+      "parent": "right",
+      "stage": "side",
+      "meshName": "RightBooster_Lox",
+      "explodeOffset": [0, 0.4, 0],
+      "info": {
+        "summary": "The upper tank, holding liquid oxygen chilled below its normal boiling point so more fits in.",
+        "purpose": "Supplies the oxidizer. Chilling the propellants makes them denser, so the tanks hold more.",
+        "materials": [
+          "Aluminium-lithium alloy"
+        ]
+      },
+      "model": {
+        "at": [0, 4.05, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 0.4625,
+            "rBottom": 0.4625,
+            "h": 5.4,
+            "at": [0, 0, 0]
+          }
+        ]
+      }
+    },
+    {
+      "id": "right.nose",
+      "name": "Nose cone",
+      "parent": "right",
+      "stage": "side",
+      "meshName": "RightBooster_Nose",
+      "explodeOffset": [0, 0.8, 0],
+      "info": {
+        "summary": "A composite nose cone in place of an interstage.",
+        "purpose": "Side boosters have nothing stacked on top, so a nose cone streamlines them. They're attached to the centre core along their sides instead."
+      },
+      "model": {
+        "at": [0, 9.45, 0],
+        "shapes": [
+          {
+            "type": "lathe",
+            "profile": [
+              [0.4625, 0.0],
+              [0.4568, 0.2503],
+              [0.4399, 0.4944],
+              [0.4121, 0.7264],
+              [0.3742, 0.9405],
+              [0.327, 1.1314],
+              [0.2719, 1.2944],
+              [0.21, 1.4256],
+              [0.1429, 1.5217],
+              [0.0724, 1.5803],
+              [0.0, 1.6]
+            ],
+            "at": [0, 0, 0],
+            "segments": 32
+          }
+        ]
+      }
+    },
+    {
+      "id": "right.legs",
+      "name": "Landing legs",
+      "parent": "right",
+      "stage": "side",
+      "meshName": "RightBooster_Legs",
+      "explodeOffset": [0, 0, 0],
+      "info": {
+        "summary": "Four folding legs, stowed flat against the booster during launch.",
+        "purpose": "Swing down a few seconds before touchdown and absorb the landing.",
+        "materials": [
+          "Carbon fibre",
+          "Aluminium honeycomb"
+        ]
+      },
+      "model": {
+        "at": [0, 0, 0],
+        "shapes": []
+      }
+    },
+    {
+      "id": "right.leg1",
+      "name": "Landing leg 1",
+      "parent": "right.legs",
+      "stage": "side",
+      "meshName": "RightBooster_Leg1",
+      "explodeOffset": [0.6, 0, 0.0],
+      "info": {
+        "summary": "One of the four landing legs (east side).",
+        "purpose": "Hinged at its foot: a pneumatic system swings it down and out just before touchdown."
+      },
+      "model": {
+        "at": [0.5125, 0.45, 0.0],
+        "shapes": [
+          {
+            "type": "box",
+            "size": [0.06, 2.4, 0.14],
+            "at": [0, 1.2, 0]
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "deploy",
+          "t": 463,
+          "duration": 3,
+          "rotation": [0, 0, -2.4]
+        }
+      ]
+    },
+    {
+      "id": "right.leg2",
+      "name": "Landing leg 2",
+      "parent": "right.legs",
+      "stage": "side",
+      "meshName": "RightBooster_Leg2",
+      "explodeOffset": [-0.6, 0, 0.0],
+      "info": {
+        "summary": "One of the four landing legs (west side).",
+        "purpose": "Hinged at its foot: a pneumatic system swings it down and out just before touchdown."
+      },
+      "model": {
+        "at": [-0.5125, 0.45, 0.0],
+        "shapes": [
+          {
+            "type": "box",
+            "size": [0.06, 2.4, 0.14],
+            "at": [0, 1.2, 0]
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "deploy",
+          "t": 463,
+          "duration": 3,
+          "rotation": [0, 0, 2.4]
+        }
+      ]
+    },
+    {
+      "id": "right.leg3",
+      "name": "Landing leg 3",
+      "parent": "right.legs",
+      "stage": "side",
+      "meshName": "RightBooster_Leg3",
+      "explodeOffset": [0.0, 0, 0.6],
+      "info": {
+        "summary": "One of the four landing legs (north side).",
+        "purpose": "Hinged at its foot: a pneumatic system swings it down and out just before touchdown."
+      },
+      "model": {
+        "at": [0.0, 0.45, 0.5125],
+        "shapes": [
+          {
+            "type": "box",
+            "size": [0.14, 2.4, 0.06],
+            "at": [0, 1.2, 0]
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "deploy",
+          "t": 463,
+          "duration": 3,
+          "rotation": [2.4, 0, 0]
+        }
+      ]
+    },
+    {
+      "id": "right.leg4",
+      "name": "Landing leg 4",
+      "parent": "right.legs",
+      "stage": "side",
+      "meshName": "RightBooster_Leg4",
+      "explodeOffset": [0.0, 0, -0.6],
+      "info": {
+        "summary": "One of the four landing legs (south side).",
+        "purpose": "Hinged at its foot: a pneumatic system swings it down and out just before touchdown."
+      },
+      "model": {
+        "at": [0.0, 0.45, -0.5125],
+        "shapes": [
+          {
+            "type": "box",
+            "size": [0.14, 2.4, 0.06],
+            "at": [0, 1.2, 0]
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "deploy",
+          "t": 463,
+          "duration": 3,
+          "rotation": [-2.4, 0, 0]
+        }
+      ]
+    },
+    {
+      "id": "right.gridfins",
+      "name": "Grid fins",
+      "parent": "right",
+      "stage": "side",
+      "meshName": "RightBooster_GridFins",
+      "explodeOffset": [0, 0, 0],
+      "info": {
+        "summary": "Four lattice-shaped fins near the top of the booster, folded up during launch.",
+        "purpose": "Unfold after separation and steer the booster as it falls back through the atmosphere, a bit like the flaps on a plane.",
+        "materials": [
+          "Titanium"
+        ],
+        "funFact": "Grid fins work even when the booster is falling backwards at supersonic speed, which ordinary flat fins struggle with."
+      },
+      "model": {
+        "at": [0, 0, 0],
+        "shapes": []
+      }
+    },
+    {
+      "id": "right.fin1",
+      "name": "Grid fin 1",
+      "parent": "right.gridfins",
+      "stage": "side",
+      "meshName": "RightBooster_GridFin1",
+      "explodeOffset": [0.5, 0.3, 0.0],
+      "info": {
+        "summary": "One of the four titanium grid fins (east side).",
+        "purpose": "Each fin swivels independently to steer the falling booster."
+      },
+      "model": {
+        "at": [0.4925, 9.05, 0.0],
+        "shapes": [
+          {
+            "type": "box",
+            "size": [0.04, 0.38, 0.32],
+            "at": [0, 0.19, 0]
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "deploy",
+          "t": 157,
+          "duration": 2,
+          "rotation": [0, 0, -1.5707963267948966]
+        }
+      ]
+    },
+    {
+      "id": "right.fin2",
+      "name": "Grid fin 2",
+      "parent": "right.gridfins",
+      "stage": "side",
+      "meshName": "RightBooster_GridFin2",
+      "explodeOffset": [-0.5, 0.3, 0.0],
+      "info": {
+        "summary": "One of the four titanium grid fins (west side).",
+        "purpose": "Each fin swivels independently to steer the falling booster."
+      },
+      "model": {
+        "at": [-0.4925, 9.05, 0.0],
+        "shapes": [
+          {
+            "type": "box",
+            "size": [0.04, 0.38, 0.32],
+            "at": [0, 0.19, 0]
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "deploy",
+          "t": 157,
+          "duration": 2,
+          "rotation": [0, 0, 1.5707963267948966]
+        }
+      ]
+    },
+    {
+      "id": "right.fin3",
+      "name": "Grid fin 3",
+      "parent": "right.gridfins",
+      "stage": "side",
+      "meshName": "RightBooster_GridFin3",
+      "explodeOffset": [0.0, 0.3, 0.5],
+      "info": {
+        "summary": "One of the four titanium grid fins (north side).",
+        "purpose": "Each fin swivels independently to steer the falling booster."
+      },
+      "model": {
+        "at": [0.0, 9.05, 0.4925],
+        "shapes": [
+          {
+            "type": "box",
+            "size": [0.32, 0.38, 0.04],
+            "at": [0, 0.19, 0]
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "deploy",
+          "t": 157,
+          "duration": 2,
+          "rotation": [1.5707963267948966, 0, 0]
+        }
+      ]
+    },
+    {
+      "id": "right.fin4",
+      "name": "Grid fin 4",
+      "parent": "right.gridfins",
+      "stage": "side",
+      "meshName": "RightBooster_GridFin4",
+      "explodeOffset": [0.0, 0.3, -0.5],
+      "info": {
+        "summary": "One of the four titanium grid fins (south side).",
+        "purpose": "Each fin swivels independently to steer the falling booster."
+      },
+      "model": {
+        "at": [0.0, 9.05, -0.4925],
+        "shapes": [
+          {
+            "type": "box",
+            "size": [0.32, 0.38, 0.04],
+            "at": [0, 0.19, 0]
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "deploy",
+          "t": 157,
+          "duration": 2,
+          "rotation": [-1.5707963267948966, 0, 0]
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "name": "Second stage",
+      "parent": null,
+      "stage": "s2",
+      "meshName": "Stage2",
+      "explodeOffset": [0, 2, 0],
+      "info": {
+        "summary": "The same upper stage Falcon 9 uses: one Merlin Vacuum engine.",
+        "purpose": "Lights after the centre core separates and carries the payload to orbit. It can restart, as it does later in this mission to reach a high transfer orbit.",
+        "specs": {
+          "Engine": "1 × Merlin Vacuum",
+          "Thrust": "about 981 kN in vacuum"
+        }
+      },
+      "model": {
+        "at": [0, 9.6, 0],
+        "shapes": []
+      }
+    },
+    {
+      "id": "s2.engine",
+      "name": "Merlin Vacuum engine",
+      "parent": "s2",
+      "stage": "s2",
+      "meshName": "Stage2_Engine",
+      "explodeOffset": [0, -1, 0],
+      "info": {
+        "summary": "A Merlin with a large nozzle extension for vacuum.",
+        "purpose": "In vacuum, a bigger nozzle gets more push out of the same exhaust.",
+        "materials": [
+          "Niobium alloy nozzle extension"
+        ]
+      },
+      "model": {
+        "at": [0, 0, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 0.08,
+            "rBottom": 0.38,
+            "h": 1.0,
+            "open": true,
+            "at": [0, 0, 0],
+            "segments": 32
+          },
+          {
+            "type": "cylinder",
+            "rTop": 0.12,
+            "rBottom": 0.12,
+            "h": 0.45,
+            "at": [0, 1.0, 0],
+            "segments": 16
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "ignite",
+          "t": 222
+        },
+        {
+          "event": "shutdown",
+          "t": 528
+        }
+      ]
+    },
+    {
+      "id": "s2.tanks",
+      "name": "Second-stage tanks",
+      "parent": "s2",
+      "stage": "s2",
+      "meshName": "Stage2_Tanks",
+      "explodeOffset": [0, 0, 0],
+      "info": {
+        "summary": "RP-1 and liquid-oxygen tanks.",
+        "purpose": "Built on the same tooling as the boosters.",
+        "materials": [
+          "Aluminium-lithium alloy"
+        ]
+      },
+      "model": {
+        "at": [0, 1.45, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 0.4625,
+            "rBottom": 0.4625,
+            "h": 2.6,
+            "at": [0, 0, 0]
+          }
+        ]
+      }
+    },
+    {
+      "id": "payload",
+      "name": "Payload",
+      "parent": null,
+      "stage": "payload",
+      "meshName": "Payload",
+      "explodeOffset": [0, 3, 0],
+      "info": {
+        "summary": "The satellite and its fairing.",
+        "purpose": "With 27 engines at liftoff, Falcon Heavy can carry about 63.8 tonnes to low Earth orbit, though recovered boosters reduce that."
+      },
+      "model": {
+        "at": [0, 13.65, 0],
+        "shapes": []
+      }
+    },
+    {
+      "id": "payload.fairing.left",
+      "name": "Fairing (left half)",
+      "parent": "payload",
+      "stage": "payload",
+      "meshName": "Payload_FairingLeft",
+      "explodeOffset": [-2.4, 0.5, 0],
+      "info": {
+        "summary": "Half of the 5.2 m fairing, the same one Falcon 9 uses.",
+        "purpose": "Protects the satellite through the atmosphere, then splits away.",
+        "materials": [
+          "Carbon fibre over an aluminium honeycomb core"
+        ]
+      },
+      "model": {
+        "at": [0, 0, 0],
+        "shapes": [
+          {
+            "type": "lathe",
+            "profile": [
+              [0.4625, 0],
+              [0.65, 0.25],
+              [0.65, 1.7],
+              [0.6444, 1.9088],
+              [0.6279, 2.1141],
+              [0.6005, 2.3123],
+              [0.5629, 2.5],
+              [0.5157, 2.674],
+              [0.4596, 2.8314],
+              [0.3957, 2.9694],
+              [0.325, 3.0856],
+              [0.2487, 3.1782],
+              [0.1682, 3.2455],
+              [0.0848, 3.2863],
+              [0.0, 3.3]
+            ],
+            "at": [0, 0, 0],
+            "phiStart": 180,
+            "phiLength": 180,
+            "segments": 32
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "jettison",
+          "t": 247,
+          "velocity": [-1.2, 0.2, 0],
+          "spin": [0, 0, 0.36]
+        }
+      ]
+    },
+    {
+      "id": "payload.fairing.right",
+      "name": "Fairing (right half)",
+      "parent": "payload",
+      "stage": "payload",
+      "meshName": "Payload_FairingRight",
+      "explodeOffset": [2.4, 0.5, 0],
+      "info": {
+        "summary": "Half of the 5.2 m fairing, the same one Falcon 9 uses.",
+        "purpose": "Protects the satellite through the atmosphere, then splits away.",
+        "materials": [
+          "Carbon fibre over an aluminium honeycomb core"
+        ]
+      },
+      "model": {
+        "at": [0, 0, 0],
+        "shapes": [
+          {
+            "type": "lathe",
+            "profile": [
+              [0.4625, 0],
+              [0.65, 0.25],
+              [0.65, 1.7],
+              [0.6444, 1.9088],
+              [0.6279, 2.1141],
+              [0.6005, 2.3123],
+              [0.5629, 2.5],
+              [0.5157, 2.674],
+              [0.4596, 2.8314],
+              [0.3957, 2.9694],
+              [0.325, 3.0856],
+              [0.2487, 3.1782],
+              [0.1682, 3.2455],
+              [0.0848, 3.2863],
+              [0.0, 3.3]
+            ],
+            "at": [0, 0, 0],
+            "phiStart": 0,
+            "phiLength": 180,
+            "segments": 32
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "jettison",
+          "t": 247,
+          "velocity": [1.2, 0.2, 0],
+          "spin": [0, 0, -0.36]
+        }
+      ]
+    },
+    {
+      "id": "payload.satellite",
+      "name": "Satellite",
+      "parent": "payload",
+      "stage": "payload",
+      "meshName": "Payload_Satellite",
+      "explodeOffset": [0, 0, 0],
+      "info": {
+        "summary": "A large communications satellite, like Arabsat-6A, which weighed about 6.5 tonnes.",
+        "purpose": "Bound for a high transfer orbit; the second stage relights later to get it there."
+      },
+      "model": {
+        "at": [0, 0.3, 0],
+        "shapes": [
+          {
+            "type": "box",
+            "size": [0.7, 1.2, 0.7],
+            "at": [0, 0.6, 0]
+          },
+          {
+            "type": "cylinder",
+            "rTop": 0.3,
+            "rBottom": 0.06,
+            "h": 0.3,
+            "at": [0, 1.2, 0],
+            "segments": 24
+          }
+        ]
+      }
+    }
+  ],
+  "flight": {
+    "start": -10,
+    "end": 528,
+    "events": [
+      {
+        "t": -10,
+        "phase": "countdown",
+        "phaseLabel": "Countdown",
+        "title": "Countdown",
+        "caption": "Three cores and 27 Merlin engines are fuelled. The engines ignite in a staggered sequence just before liftoff."
+      },
+      {
+        "t": 0,
+        "phase": "ascent",
+        "phaseLabel": "Ascent",
+        "title": "Liftoff",
+        "caption": "Liftoff with about 22,800 kN of thrust from 27 engines, more than any other rocket flying at the time of its first launch in 2018."
+      },
+      {
+        "t": 69,
+        "phase": "ascent",
+        "phaseLabel": "Ascent",
+        "title": "Max-Q",
+        "caption": "Maximum aerodynamic pressure. The centre core has been throttled down to save propellant for later."
+      },
+      {
+        "t": 150,
+        "phase": "staging",
+        "phaseLabel": "Staging",
+        "title": "Side boosters cut off",
+        "caption": "BECO: the two side boosters shut down, about two and a half minutes into the flight."
+      },
+      {
+        "t": 154,
+        "phase": "staging",
+        "phaseLabel": "Staging",
+        "title": "Side booster separation",
+        "caption": "The side boosters separate and peel away to either side, then begin their trip back to Cape Canaveral."
+      },
+      {
+        "t": 171,
+        "phase": "boostback",
+        "phaseLabel": "Boostback",
+        "title": "Side boosters: boostback",
+        "caption": "The camera follows the left side booster. Both boosters flip around and relight three engines to head back towards land, flying in formation.",
+        "follow": "left"
+      },
+      {
+        "t": 211,
+        "phase": "boostback",
+        "phaseLabel": "Boostback",
+        "title": "Centre core cutoff",
+        "caption": "High above, the centre core's engines shut down at T+3:31. Four seconds later it separates, and the second stage lights at T+3:42."
+      },
+      {
+        "t": 247,
+        "phase": "boostback",
+        "phaseLabel": "Boostback",
+        "title": "Fairing jettison (on the second stage)",
+        "caption": "The second stage drops its fairing at T+4:07. Below, the side boosters coast to the top of their arc."
+      },
+      {
+        "t": 371,
+        "phase": "entry",
+        "phaseLabel": "Entry burn",
+        "title": "Side boosters: entry burn",
+        "caption": "Both boosters relight to slow down as they fall back into thicker air."
+      },
+      {
+        "t": 448,
+        "phase": "landing",
+        "phaseLabel": "Landing",
+        "title": "Side boosters: landing burn",
+        "caption": "Each booster's centre engine lights for the final braking burn."
+      },
+      {
+        "t": 463,
+        "phase": "landing",
+        "phaseLabel": "Landing",
+        "title": "Legs deploy",
+        "caption": "Landing legs swing down on both boosters."
+      },
+      {
+        "t": 471,
+        "phase": "landed",
+        "phaseLabel": "Boosters landed",
+        "title": "Double touchdown",
+        "caption": "At T+7:51 the side boosters touch down at Landing Zones 1 and 2, seconds apart, with twin sonic booms across the Space Coast."
+      },
+      {
+        "t": 478,
+        "phase": "second-stage",
+        "phaseLabel": "Second stage",
+        "title": "Back to the second stage",
+        "caption": "The second stage is still burning towards its parking orbit. The centre core will land on a drone ship at sea at about T+9:48.",
+        "follow": "stack"
+      },
+      {
+        "t": 528,
+        "phase": "orbit",
+        "phaseLabel": "Orbit",
+        "title": "SECO 1",
+        "caption": "Second engine cutoff at T+8:48: parking orbit. The second stage will relight about 19 minutes later to send the satellite towards geostationary orbit."
+      }
+    ],
+    "altitude": [
+      [0, 0],
+      [30, 3],
+      [69, 28],
+      [150, 190],
+      [211, 340],
+      [300, 600],
+      [400, 900],
+      [528, 1250]
+    ]
+  },
+  "sources": [
+    {
+      "title": "Spaceflight Now: launch timeline for Falcon Heavy's second flight",
+      "url": "https://spaceflightnow.com/2019/04/10/launch-timeline-for-falcon-heavys-second-flight/"
+    },
+    {
+      "title": "SpaceX: Falcon Heavy",
+      "url": "https://www.spacex.com/vehicles/falcon-heavy/"
+    }
+  ]
+}

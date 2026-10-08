@@ -1,31 +1,21 @@
-import type { FlightPhase, Rocket } from '../data/parts';
-import { formatMissionTime } from '../motion/timeline';
+import type { Rocket } from '../data/parts';
+import { currentEvent, formatMissionTime } from '../motion/timeline';
 import type { RocketStore } from '../state/store';
 
-const PHASE_LABEL: Record<FlightPhase, string> = {
-  idle: 'On pad',
-  countdown: 'Countdown',
-  ascent: 'Ascent',
-  'stage-sep': 'Staging',
-  'second-stage': 'Second stage',
-  'fairing-sep': 'Fairing sep',
-  orbit: 'Orbit',
-  aborted: 'Aborted',
-};
-
 export interface StatusStripElements {
-  vehicle: HTMLElement;
   phase: HTMLElement;
   timer: HTMLElement;
 }
 
-/** Vehicle name, flight phase and mission timer in the top strip. */
+/** Flight phase and mission timer in the top strip. (The rocket picker is mounted separately.) */
 export function mountStatusStrip(els: StatusStripElements, rocket: Rocket, store: RocketStore): void {
-  els.vehicle.textContent = rocket.name;
   const render = (): void => {
     const { phase, t, playing } = store.get().flight;
-    const paused = !playing && phase !== 'idle' && phase !== 'aborted' && phase !== 'orbit';
-    els.phase.textContent = PHASE_LABEL[phase] + (paused ? ' · Paused' : '');
+    const label = phase === 'idle' ? 'On pad'
+      : phase === 'aborted' ? 'Aborted'
+      : currentEvent(rocket.flight, t)?.phaseLabel ?? '';
+    const paused = !playing && phase !== 'idle' && phase !== 'aborted' && t < rocket.flight.end;
+    els.phase.textContent = label + (paused ? ' · Paused' : '');
     els.timer.textContent = formatMissionTime(t);
   };
   render();

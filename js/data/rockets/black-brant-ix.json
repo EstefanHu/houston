@@ -1,0 +1,549 @@
+{
+  "id": "black-brant-ix",
+  "name": "Black Brant IX",
+  "kind": "Sounding rocket",
+  "summary": "A two-stage NASA sounding rocket: a Terrier booster under a Black Brant V motor. It flies straight up to about 300 km for a few minutes of science above the atmosphere, then the payload falls back under a parachute. Black Brant IXs have flown since 1982. Times and figures are typical; each mission differs.",
+  "stages": [
+    {
+      "id": "terrier",
+      "label": "Stage 1 · Terrier",
+      "color": "#8fb3d9"
+    },
+    {
+      "id": "brant",
+      "label": "Stage 2 · Black Brant",
+      "color": "#a9c4e0"
+    },
+    {
+      "id": "payload",
+      "label": "Payload",
+      "color": "#c7d8ea"
+    }
+  ],
+  "parts": [
+    {
+      "id": "terrier",
+      "name": "Terrier first stage",
+      "parent": null,
+      "stage": "terrier",
+      "meshName": "Terrier",
+      "explodeOffset": [0, -1.0, 0],
+      "info": {
+        "summary": "The booster: a surplus US Navy Terrier missile motor that gets the rocket off the rail fast.",
+        "purpose": "Burns for about six seconds, kicking the rocket up to speed so the Black Brant stage can start well above the ground. Then it simply falls away.",
+        "specs": {
+          "Diameter": "46 cm (18 in)",
+          "Thrust": "about 89 kN",
+          "Burn time": "about 6 s"
+        },
+        "funFact": "Terrier motors were built in the 1950s and 60s to launch ship-borne anti-aircraft missiles. Sounding rockets gave thousands of surplus ones a second life."
+      },
+      "model": {
+        "at": [0, 0, 0],
+        "shapes": []
+      },
+      "flightEvents": [
+        {
+          "event": "separate",
+          "t": 6.5,
+          "velocity": [0.05, -0.6, 0],
+          "spin": [0.08, 0, 0.05]
+        }
+      ]
+    },
+    {
+      "id": "terrier.motor",
+      "name": "Terrier Mk 70 motor",
+      "parent": "terrier",
+      "stage": "terrier",
+      "meshName": "Terrier_Motor",
+      "explodeOffset": [0, -0.3, 0],
+      "info": {
+        "summary": "A solid-fuel rocket motor: a steel case packed with a rubbery propellant.",
+        "purpose": "Solid motors can't be throttled or switched off once lit, but they are simple, reliable and can sit in storage for years.",
+        "materials": [
+          "Steel motor case",
+          "Solid composite propellant"
+        ],
+        "specs": {
+          "Thrust": "about 89 kN",
+          "Burn time": "about 6 s"
+        }
+      },
+      "model": {
+        "at": [0, 0, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 0.03,
+            "rBottom": 0.045,
+            "h": 0.05,
+            "open": true,
+            "at": [0, 0, 0],
+            "segments": 24
+          },
+          {
+            "type": "cylinder",
+            "rTop": 0.0575,
+            "rBottom": 0.0575,
+            "h": 0.9,
+            "at": [0, 0.05, 0],
+            "segments": 32
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "ignite",
+          "t": 0
+        },
+        {
+          "event": "shutdown",
+          "t": 6
+        }
+      ]
+    },
+    {
+      "id": "terrier.fins",
+      "name": "Terrier fins",
+      "parent": "terrier",
+      "stage": "terrier",
+      "meshName": "Terrier_Fins",
+      "explodeOffset": [0, -0.1, 0.25],
+      "info": {
+        "summary": "Four large fins at the tail of the booster.",
+        "purpose": "Keep the rocket stable and spin it slowly as it climbs, which evens out small misalignments in thrust. Sounding rockets have no guidance system steering them.",
+        "funFact": "The fins are canted by a fraction of a degree. That tiny angle is enough to spin the whole rocket several times a second."
+      },
+      "model": {
+        "at": [0, 0.05, 0],
+        "shapes": [
+          {
+            "type": "box",
+            "size": [0.006, 0.3, 0.2],
+            "at": [0, 0.15, 0],
+            "repeat": {
+              "count": 4,
+              "radius": 0.1575,
+              "phase": 45
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "terrier.adapter",
+      "name": "Interstage adapter",
+      "parent": "terrier",
+      "stage": "terrier",
+      "meshName": "Terrier_Adapter",
+      "explodeOffset": [0, 0.2, 0],
+      "info": {
+        "summary": "A short ring joining the two stages.",
+        "purpose": "Holds the stages together during the boost, then lets go so drag can pull the spent Terrier away."
+      },
+      "model": {
+        "at": [0, 0.95, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 0.055,
+            "rBottom": 0.0575,
+            "h": 0.06,
+            "at": [0, 0, 0],
+            "segments": 32
+          }
+        ]
+      }
+    },
+    {
+      "id": "brant",
+      "name": "Black Brant second stage",
+      "parent": null,
+      "stage": "brant",
+      "meshName": "Brant",
+      "explodeOffset": [0, -0.3, 0],
+      "info": {
+        "summary": "The sustainer stage: a Black Brant V motor, the workhorse of the Canadian-designed Black Brant family.",
+        "purpose": "After a short coast, it lights and burns for about half a minute, carrying the payload out of the atmosphere at several times the speed of sound.",
+        "specs": {
+          "Diameter": "44 cm (17.3 in)",
+          "Thrust": "about 81 kN",
+          "Burn time": "about 34 s"
+        },
+        "funFact": "The Black Brant family grew out of solid-propellant research in Canada starting in 1958."
+      },
+      "model": {
+        "at": [0, 1.01, 0],
+        "shapes": []
+      },
+      "flightEvents": [
+        {
+          "event": "separate",
+          "t": 66,
+          "velocity": [-0.04, -0.4, 0],
+          "spin": [0.04, 0, 0.06]
+        }
+      ]
+    },
+    {
+      "id": "brant.motor",
+      "name": "Black Brant V motor",
+      "parent": "brant",
+      "stage": "brant",
+      "meshName": "Brant_Motor",
+      "explodeOffset": [0, -0.2, 0],
+      "info": {
+        "summary": "A long, thin solid motor, about 5.6 m from end to end.",
+        "purpose": "Does the real work of the flight: by burnout, about 46 seconds after launch, the rocket is fast enough to coast to around 300 km.",
+        "materials": [
+          "Steel motor case",
+          "Solid composite propellant"
+        ],
+        "specs": {
+          "Length": "about 5.6 m",
+          "Thrust": "about 81 kN",
+          "Burnout": "about T+46 s"
+        }
+      },
+      "model": {
+        "at": [0, 0, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 0.028,
+            "rBottom": 0.042,
+            "h": 0.04,
+            "open": true,
+            "at": [0, 0, 0],
+            "segments": 24
+          },
+          {
+            "type": "cylinder",
+            "rTop": 0.055,
+            "rBottom": 0.055,
+            "h": 1.36,
+            "at": [0, 0.04, 0],
+            "segments": 32
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "ignite",
+          "t": 12
+        },
+        {
+          "event": "shutdown",
+          "t": 46
+        }
+      ]
+    },
+    {
+      "id": "brant.fins",
+      "name": "Black Brant fins",
+      "parent": "brant",
+      "stage": "brant",
+      "meshName": "Brant_Fins",
+      "explodeOffset": [0, 0, 0.2],
+      "info": {
+        "summary": "Smaller fins on the second stage.",
+        "purpose": "Keep the upper stage pointing nose-first and spinning while it burns."
+      },
+      "model": {
+        "at": [0, 0.04, 0],
+        "shapes": [
+          {
+            "type": "box",
+            "size": [0.005, 0.18, 0.12],
+            "at": [0, 0.09, 0],
+            "repeat": {
+              "count": 4,
+              "radius": 0.11499999999999999,
+              "phase": 45
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "payload",
+      "name": "Payload",
+      "parent": null,
+      "stage": "payload",
+      "meshName": "Payload",
+      "explodeOffset": [0, 0.6, 0],
+      "info": {
+        "summary": "The science section: instruments, their electronics, and the system that brings them home.",
+        "purpose": "Everything the flight is for. Payloads typically weigh a few hundred kilograms and are recovered, refurbished and often flown again."
+      },
+      "model": {
+        "at": [0, 2.41, 0],
+        "shapes": []
+      }
+    },
+    {
+      "id": "payload.experiment",
+      "name": "Science instruments",
+      "parent": "payload",
+      "stage": "payload",
+      "meshName": "Payload_Experiment",
+      "explodeOffset": [0.25, 0, 0],
+      "info": {
+        "summary": "Telescopes, particle detectors or other experiments, depending on the mission.",
+        "purpose": "Make a few minutes of observations from above the atmosphere: ultraviolet and X-ray light from the Sun and stars, or the particles inside the aurora, none of which reach the ground.",
+        "specs": {
+          "Typical mass": "about 180–540 kg (400–1,200 lb)"
+        },
+        "funFact": "Students and early-career scientists often build these payloads. A sounding rocket is one of the cheapest ways to get an instrument into space."
+      },
+      "model": {
+        "at": [0, 0, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 0.055,
+            "rBottom": 0.055,
+            "h": 0.55,
+            "at": [0, 0, 0],
+            "segments": 32
+          }
+        ]
+      }
+    },
+    {
+      "id": "payload.recovery",
+      "name": "Recovery system",
+      "parent": "payload",
+      "stage": "payload",
+      "meshName": "Payload_Recovery",
+      "explodeOffset": [-0.25, 0, 0],
+      "info": {
+        "summary": "The section that holds the packed parachute and its deployment hardware.",
+        "purpose": "Senses when the payload has fallen back into thick air and pushes the parachute out."
+      },
+      "model": {
+        "at": [0, 0.55, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 0.055,
+            "rBottom": 0.055,
+            "h": 0.16,
+            "at": [0, 0, 0],
+            "segments": 32
+          }
+        ]
+      }
+    },
+    {
+      "id": "payload.parachute",
+      "name": "Parachute",
+      "parent": "payload",
+      "stage": "payload",
+      "meshName": "Payload_Parachute",
+      "explodeOffset": [0, 0.4, 0],
+      "info": {
+        "summary": "A large parachute, packed tight until the very end of the flight.",
+        "purpose": "Slows the payload to a gentle landing so the instruments can be recovered and flown again.",
+        "funFact": "After landing, the payload is usually picked up by helicopter or truck. From White Sands, it's often back in the lab the same day."
+      },
+      "model": {
+        "at": [0, 0.71, 0],
+        "shapes": [
+          {
+            "type": "lathe",
+            "profile": [
+              [0.75, 0],
+              [0.72, 0.18],
+              [0.6, 0.34],
+              [0.42, 0.46],
+              [0.2, 0.53],
+              [0, 0.55]
+            ],
+            "at": [0, 1.1, 0],
+            "segments": 24
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "deploy",
+          "t": 745,
+          "duration": 5,
+          "scale": [
+            [0.02, 0.02, 0.02],
+            [1, 1, 1]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "payload.nosecone",
+      "name": "Nose cone",
+      "parent": "payload",
+      "stage": "payload",
+      "meshName": "Payload_Nosecone",
+      "explodeOffset": [0, 0.35, 0],
+      "info": {
+        "summary": "The pointed cover that protects the instruments on the way up.",
+        "purpose": "Cuts through the air during the boost, then is ejected once the rocket is above the atmosphere so the instruments can see out.",
+        "materials": [
+          "Aluminium or composite skin"
+        ]
+      },
+      "model": {
+        "at": [0, 0.71, 0],
+        "shapes": [
+          {
+            "type": "lathe",
+            "profile": [
+              [0.055, 0.0],
+              [0.0543, 0.0532],
+              [0.0523, 0.1051],
+              [0.049, 0.1544],
+              [0.0445, 0.1998],
+              [0.0389, 0.2404],
+              [0.0323, 0.2751],
+              [0.025, 0.3029],
+              [0.017, 0.3234],
+              [0.0086, 0.3358],
+              [0.0, 0.34]
+            ],
+            "at": [0, 0, 0],
+            "segments": 32
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "jettison",
+          "t": 62,
+          "velocity": [0.12, 0.25, 0],
+          "spin": [0, 0, -0.5]
+        }
+      ]
+    }
+  ],
+  "flight": {
+    "start": -10,
+    "end": 900,
+    "events": [
+      {
+        "t": -10,
+        "phase": "countdown",
+        "phaseLabel": "Countdown",
+        "title": "Countdown",
+        "caption": "Final checks at the launch range. Sounding rockets launch from a rail, angled slightly to allow for the wind so the payload lands inside the range."
+      },
+      {
+        "t": 0,
+        "phase": "boost",
+        "phaseLabel": "Boost",
+        "title": "Terrier ignition",
+        "caption": "The Terrier booster fires for about six seconds, accelerating the rocket off the rail at well over 10 g."
+      },
+      {
+        "t": 6.5,
+        "phase": "coast",
+        "phaseLabel": "Coast",
+        "title": "Terrier separation",
+        "caption": "The spent Terrier drops away, pulled back by air drag. The upper stage coasts for a few seconds before lighting its own motor."
+      },
+      {
+        "t": 12,
+        "phase": "boost",
+        "phaseLabel": "Boost",
+        "title": "Black Brant ignition",
+        "caption": "The Black Brant V motor ignites and burns for about half a minute, pushing the payload out of the atmosphere."
+      },
+      {
+        "t": 46,
+        "phase": "coast",
+        "phaseLabel": "Coast",
+        "title": "Burnout",
+        "caption": "The motor is spent. From here the rocket simply coasts upward like a thrown ball, slowing all the way to the top."
+      },
+      {
+        "t": 60,
+        "phase": "coast",
+        "phaseLabel": "Coast",
+        "title": "Despin",
+        "caption": "Weights on cables unreel from the payload to slow its spin (a \"yo-yo despin\"), so the instruments can point steadily."
+      },
+      {
+        "t": 62,
+        "phase": "coast",
+        "phaseLabel": "Coast",
+        "title": "Nose cone ejected",
+        "caption": "The nose cone pops off, uncovering the instruments now that there is almost no air left to protect them from."
+      },
+      {
+        "t": 66,
+        "phase": "science",
+        "phaseLabel": "Science",
+        "title": "Payload separation",
+        "caption": "The empty motor separates. The payload flies on alone, and above about 100 km the science window begins: several minutes of near-weightlessness and a clear view of space.",
+        "follow": "payload"
+      },
+      {
+        "t": 290,
+        "phase": "apogee",
+        "phaseLabel": "Apogee",
+        "title": "Apogee",
+        "caption": "The highest point, typically around 300 km, almost as high as the International Space Station. But the payload is only going up, not sideways, so it falls straight back."
+      },
+      {
+        "t": 480,
+        "phase": "reentry",
+        "phaseLabel": "Re-entry",
+        "title": "Re-entry",
+        "caption": "The payload falls back into the atmosphere. Air resistance builds quickly and slows it from several kilometres per second."
+      },
+      {
+        "t": 745,
+        "phase": "recovery",
+        "phaseLabel": "Recovery",
+        "title": "Parachute deploys",
+        "caption": "With the payload slowed by the air, the parachute opens for a gentle descent."
+      },
+      {
+        "t": 900,
+        "phase": "landed",
+        "phaseLabel": "Landed",
+        "title": "Touchdown",
+        "caption": "About fifteen minutes after launch, the payload lands. The experiment's data was already radioed to the ground during the flight; now the hardware comes home too."
+      }
+    ],
+    "altitude": [
+      [0, 0],
+      [6, 2],
+      [12, 8],
+      [46, 140],
+      [66, 260],
+      [120, 560],
+      [200, 860],
+      [290, 1000],
+      [380, 860],
+      [480, 560],
+      [600, 220],
+      [700, 70],
+      [745, 33],
+      [900, -2.41]
+    ]
+  },
+  "sources": [
+    {
+      "title": "NASA Sounding Rockets Program: vehicles",
+      "url": "https://www.nasa.gov/soundingrockets/vehicles"
+    },
+    {
+      "title": "Designation Systems: Bristol of Canada Black Brant",
+      "url": "https://designation-systems.net/dusrm/app4/blackbrant.html"
+    },
+    {
+      "title": "Black Brant (rocket), Wikipedia",
+      "url": "https://en.wikipedia.org/wiki/Black_Brant_(rocket)"
+    }
+  ]
+}

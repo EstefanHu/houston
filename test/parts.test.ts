@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import rocketJson from '../js/data/rocket.json';
+import rocketJson from '../js/data/rockets/houston-1.json';
 import { RocketDataError, ancestorsOf, descendantsOf, parseRocket } from '../js/data/parts';
 
 const clone = (): any => structuredClone(rocketJson);
@@ -24,7 +24,17 @@ describe('parseRocket', () => {
     ['bad spec value', (j: any) => { j.parts[0].info.specs.Height = 42; }, /specs\.Height/],
     ['unsorted timeline', (j: any) => { j.flight.events.reverse(); }, /sorted/],
     ['event out of range', (j: any) => { j.flight.events[0].t = -99; }, /outside/],
-    ['bad phase', (j: any) => { j.flight.events[0].phase = 'idle'; }, /unknown phase/],
+    ['reserved phase', (j: any) => { j.flight.events[0].phase = 'idle'; }, /reserved/],
+    ['missing phase label', (j: any) => { delete j.flight.events[0].phaseLabel; }, /phaseLabel/],
+    ['unknown stage', (j: any) => { j.parts[0].stage = 'stage9'; }, /unknown stage "stage9"/],
+    ['bad stage colour', (j: any) => { j.stages[0].color = 'blue'; }, /hex colour/],
+    ['unknown shape', (j: any) => { j.parts[1].model.shapes[0].type = 'sphere'; }, /unknown shape/],
+    ['bad repeat', (j: any) => { j.parts[1].model.shapes[1].repeat.count = 0; }, /repeat\.count/],
+    ['unsorted altitude', (j: any) => { j.flight.altitude.reverse(); }, /altitude.*sorted/],
+    ['follow unknown part', (j: any) => { j.flight.events[1].follow = 'nope'; }, /follow: unknown part/],
+    ['deploy without duration', (j: any) => { j.parts[0].flightEvents.push({ event: 'deploy', t: 1, rotation: [0, 0, 1] }); }, /duration/],
+    ['track with one key', (j: any) => { j.parts[0].track = { frame: 'world', keys: [{ t: 1, offset: [0, 0, 0] }] }; }, /at least two keys/],
+    ['http source', (j: any) => { j.sources = [{ title: 'x', url: 'http://example.com' }]; }, /https/],
   ])('rejects %s', (_label, mutate, message) => {
     const j = clone();
     mutate(j);

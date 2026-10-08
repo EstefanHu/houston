@@ -1,0 +1,892 @@
+{
+  "id": "saturn-v",
+  "name": "Saturn V",
+  "kind": "Crewed Moon rocket",
+  "summary": "The three-stage rocket that launched Apollo 11 to the Moon on 16 July 1969: 110.6 m tall, about 2,900 tonnes at liftoff. Saturn Vs flew 13 times between 1967 and 1973. This shows the launch to Earth orbit, with timings from that flight.",
+  "stages": [
+    {
+      "id": "s1",
+      "label": "S-IC · Stage 1",
+      "color": "#8fb3d9"
+    },
+    {
+      "id": "s2",
+      "label": "S-II · Stage 2",
+      "color": "#9dbcde"
+    },
+    {
+      "id": "s3",
+      "label": "S-IVB · Stage 3",
+      "color": "#adc7e3"
+    },
+    {
+      "id": "sc",
+      "label": "Apollo spacecraft",
+      "color": "#c7d8ea"
+    },
+    {
+      "id": "les",
+      "label": "Launch escape system",
+      "color": "#d7e2ee"
+    }
+  ],
+  "parts": [
+    {
+      "id": "s1",
+      "name": "S-IC first stage",
+      "parent": null,
+      "stage": "s1",
+      "meshName": "S_IC",
+      "explodeOffset": [0, -8, 0],
+      "info": {
+        "summary": "The first stage: 42 m tall, 10 m wide, with five F-1 engines burning kerosene and liquid oxygen.",
+        "purpose": "Lifts the whole 2,900-tonne vehicle off the pad and pushes it to about 68 km and 9,900 km/h in two and a half minutes, then falls into the Atlantic.",
+        "specs": {
+          "Height": "42 m",
+          "Diameter": "10 m",
+          "Engines": "5 × F-1",
+          "Thrust at liftoff": "about 33,000 kN (7.5 million lbf)",
+          "Burn time": "about 2 min 42 s"
+        },
+        "funFact": "In those 162 seconds the S-IC burned roughly 2,000 tonnes of propellant, more than 12 tonnes every second."
+      },
+      "model": {
+        "at": [0, 0, 0],
+        "shapes": []
+      },
+      "flightEvents": [
+        {
+          "event": "separate",
+          "t": 162.5,
+          "velocity": [0, -1.2, 0],
+          "spin": [0.04, 0, 0.02]
+        }
+      ]
+    },
+    {
+      "id": "s1.engines",
+      "name": "F-1 engines",
+      "parent": "s1",
+      "stage": "s1",
+      "meshName": "S_IC_Engines",
+      "explodeOffset": [0, -2, 0],
+      "info": {
+        "summary": "Five F-1 engines: four on the outside that swivel to steer, and one fixed in the centre.",
+        "purpose": "Burn RP-1 kerosene with liquid oxygen. The centre engine shuts down early so the acceleration doesn't climb too high as the rocket gets lighter.",
+        "materials": [
+          "Inconel and stainless-steel tube-wall chambers"
+        ],
+        "specs": {
+          "Thrust (each)": "about 1.5 million lbf (6,700 kN)",
+          "Nozzle exit": "about 3.7 m across"
+        },
+        "funFact": "The F-1 is still the most powerful single-chamber liquid-fuelled rocket engine ever flown."
+      },
+      "model": {
+        "at": [0, 0, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 0.25,
+            "rBottom": 0.46,
+            "h": 1.45,
+            "open": true,
+            "at": [0, 0, 0],
+            "segments": 24
+          },
+          {
+            "type": "cylinder",
+            "rTop": 0.25,
+            "rBottom": 0.46,
+            "h": 1.45,
+            "open": true,
+            "at": [0, 0, 0],
+            "segments": 24,
+            "repeat": {
+              "count": 4,
+              "radius": 0.62,
+              "phase": 45
+            }
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "ignite",
+          "t": -6
+        },
+        {
+          "event": "shutdown",
+          "t": 162
+        }
+      ]
+    },
+    {
+      "id": "s1.fins",
+      "name": "Fins and engine fairings",
+      "parent": "s1",
+      "stage": "s1",
+      "meshName": "S_IC_Fins",
+      "explodeOffset": [0, -1, 1.5],
+      "info": {
+        "summary": "Four fins, each next to a fairing that streamlines an outer engine.",
+        "purpose": "Add stability in the dense lower atmosphere, especially if an engine were to fail."
+      },
+      "model": {
+        "at": [0, 0, 0],
+        "shapes": [
+          {
+            "type": "box",
+            "size": [0.07, 1.4, 0.9],
+            "at": [0, 0.95, 0],
+            "repeat": {
+              "count": 4,
+              "radius": 1.71,
+              "phase": 45
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "s1.thrust",
+      "name": "Thrust structure",
+      "parent": "s1",
+      "stage": "s1",
+      "meshName": "S_IC_Thrust",
+      "explodeOffset": [0, -1, 0],
+      "info": {
+        "summary": "The heavy frame the engines bolt to.",
+        "purpose": "Spreads the engines' push into the tanks and the rest of the stage. During the hold-down before liftoff, it also carries the rocket's weight."
+      },
+      "model": {
+        "at": [0, 1.45, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 1.26,
+            "rBottom": 1.26,
+            "h": 0.75,
+            "at": [0, 0, 0]
+          }
+        ]
+      }
+    },
+    {
+      "id": "s1.fuel",
+      "name": "RP-1 tank",
+      "parent": "s1",
+      "stage": "s1",
+      "meshName": "S_IC_Fuel",
+      "explodeOffset": [0, -0.4, 0],
+      "info": {
+        "summary": "The lower tank, holding refined kerosene (RP-1).",
+        "purpose": "Feeds fuel to the F-1s. The liquid-oxygen feed lines run straight down through this tank to the engines.",
+        "materials": [
+          "Aluminium alloy"
+        ]
+      },
+      "model": {
+        "at": [0, 2.2, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 1.26,
+            "rBottom": 1.26,
+            "h": 3.3,
+            "at": [0, 0, 0]
+          }
+        ]
+      }
+    },
+    {
+      "id": "s1.lox",
+      "name": "Liquid-oxygen tank",
+      "parent": "s1",
+      "stage": "s1",
+      "meshName": "S_IC_Lox",
+      "explodeOffset": [0, 0.4, 0],
+      "info": {
+        "summary": "The upper and larger tank, holding liquid oxygen at about −183 °C.",
+        "purpose": "Supplies the oxidizer. By mass, the S-IC carried more than twice as much liquid oxygen as kerosene.",
+        "materials": [
+          "Aluminium alloy"
+        ]
+      },
+      "model": {
+        "at": [0, 5.5, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 1.26,
+            "rBottom": 1.26,
+            "h": 4.9,
+            "at": [0, 0, 0]
+          }
+        ]
+      }
+    },
+    {
+      "id": "s2",
+      "name": "S-II second stage",
+      "parent": null,
+      "stage": "s2",
+      "meshName": "S_II",
+      "explodeOffset": [0, -2, 0],
+      "info": {
+        "summary": "The second stage: 25 m tall and 10 m wide, with five J-2 engines burning liquid hydrogen and oxygen.",
+        "purpose": "Takes over at the edge of space and burns for about six and a half minutes, carrying the rest of the vehicle almost to orbital speed.",
+        "specs": {
+          "Height": "25 m",
+          "Diameter": "10 m",
+          "Engines": "5 × J-2",
+          "Burn time": "about 6 min 23 s"
+        },
+        "funFact": "To save weight, its hydrogen and oxygen tanks share a single insulated wall, called a common bulkhead, with a 250 °C temperature difference across it."
+      },
+      "model": {
+        "at": [0, 10.4, 0],
+        "shapes": []
+      },
+      "flightEvents": [
+        {
+          "event": "separate",
+          "t": 549,
+          "velocity": [0, -1.0, 0],
+          "spin": [0.03, 0, 0.02]
+        }
+      ]
+    },
+    {
+      "id": "s2.interstage",
+      "name": "S-II aft interstage",
+      "parent": "s2",
+      "stage": "s2",
+      "meshName": "S_II_Interstage",
+      "explodeOffset": [0, -1.5, 0],
+      "info": {
+        "summary": "A 5.5 m ring that joined the first and second stages.",
+        "purpose": "Shrouds the J-2 engines during the first-stage burn. It is dropped about 30 seconds after the second stage lights, in a separate \"second plane\" separation.",
+        "funFact": "The ring sat just centimetres from the engine bells, so it had to fall away cleanly, straight back."
+      },
+      "model": {
+        "at": [0, 0, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 1.26,
+            "rBottom": 1.26,
+            "h": 1.4,
+            "open": true,
+            "at": [0, 0, 0]
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "jettison",
+          "t": 193,
+          "velocity": [0, -1.0, 0],
+          "spin": [0.03, 0, 0]
+        }
+      ]
+    },
+    {
+      "id": "s2.engines",
+      "name": "J-2 engines",
+      "parent": "s2",
+      "stage": "s2",
+      "meshName": "S_II_Engines",
+      "explodeOffset": [0, -0.8, 0],
+      "info": {
+        "summary": "Five J-2 engines, burning liquid hydrogen with liquid oxygen.",
+        "purpose": "Hydrogen gives far more push per kilogram of propellant than kerosene, which matters most on the upper stages.",
+        "specs": {
+          "Thrust (each)": "about 230,000 lbf (1,000 kN) in vacuum"
+        },
+        "funFact": "The centre J-2 was shut down early to stop \"pogo\": a dangerous bouncing vibration between the engines and the propellant feed."
+      },
+      "model": {
+        "at": [0, 0.2, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 0.14,
+            "rBottom": 0.26,
+            "h": 0.85,
+            "open": true,
+            "at": [0, 0, 0],
+            "segments": 24
+          },
+          {
+            "type": "cylinder",
+            "rTop": 0.14,
+            "rBottom": 0.26,
+            "h": 0.85,
+            "open": true,
+            "at": [0, 0, 0],
+            "segments": 24,
+            "repeat": {
+              "count": 4,
+              "radius": 0.55,
+              "phase": 45
+            }
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "ignite",
+          "t": 165
+        },
+        {
+          "event": "shutdown",
+          "t": 549
+        }
+      ]
+    },
+    {
+      "id": "s2.tanks",
+      "name": "Hydrogen and oxygen tanks",
+      "parent": "s2",
+      "stage": "s2",
+      "meshName": "S_II_Tanks",
+      "explodeOffset": [0, 0, 0],
+      "info": {
+        "summary": "A huge liquid-hydrogen tank above a smaller liquid-oxygen tank, sharing one wall.",
+        "purpose": "Liquid hydrogen is very light, so it needs a lot of volume: most of the stage is the hydrogen tank.",
+        "materials": [
+          "Aluminium alloy",
+          "Spray-on foam insulation"
+        ]
+      },
+      "model": {
+        "at": [0, 1.4, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 1.26,
+            "rBottom": 1.26,
+            "h": 5.0,
+            "at": [0, 0, 0]
+          }
+        ]
+      }
+    },
+    {
+      "id": "s2.adapter",
+      "name": "S-II/S-IVB interstage",
+      "parent": "s2",
+      "stage": "s2",
+      "meshName": "S_II_Adapter",
+      "explodeOffset": [0, 1.2, 0],
+      "info": {
+        "summary": "The tapered section narrowing from 10 m to 6.6 m.",
+        "purpose": "Joins the wide second stage to the narrower third stage and covers its engine. It stays with the S-II when the stages separate."
+      },
+      "model": {
+        "at": [0, 6.4, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 0.825,
+            "rBottom": 1.26,
+            "h": 1.0,
+            "open": true,
+            "at": [0, 0, 0]
+          }
+        ]
+      }
+    },
+    {
+      "id": "s3",
+      "name": "S-IVB third stage",
+      "parent": null,
+      "stage": "s3",
+      "meshName": "S_IVB",
+      "explodeOffset": [0, 1.5, 0],
+      "info": {
+        "summary": "The third stage: 18 m tall, 6.6 m wide, with a single restartable J-2.",
+        "purpose": "Burns once to put Apollo into Earth orbit, then, about two and a half hours after launch, relights to send it to the Moon.",
+        "specs": {
+          "Height": "18 m",
+          "Diameter": "6.6 m",
+          "Engines": "1 × J-2 (restartable)"
+        }
+      },
+      "model": {
+        "at": [0, 16.75, 0],
+        "shapes": []
+      }
+    },
+    {
+      "id": "s3.engine",
+      "name": "J-2 engine",
+      "parent": "s3",
+      "stage": "s3",
+      "meshName": "S_IVB_Engine",
+      "explodeOffset": [0, -1, 0],
+      "info": {
+        "summary": "A single J-2, the same model as on the second stage.",
+        "purpose": "Unlike most rocket engines of its day, it could be shut down and restarted in space, which made the trip to the Moon possible.",
+        "specs": {
+          "Thrust": "about 230,000 lbf (1,000 kN) in vacuum"
+        }
+      },
+      "model": {
+        "at": [0, 0, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 0.14,
+            "rBottom": 0.26,
+            "h": 0.85,
+            "open": true,
+            "at": [0, 0, 0],
+            "segments": 24
+          }
+        ]
+      },
+      "flightEvents": [
+        {
+          "event": "ignite",
+          "t": 552
+        },
+        {
+          "event": "shutdown",
+          "t": 699
+        }
+      ]
+    },
+    {
+      "id": "s3.tanks",
+      "name": "S-IVB tanks",
+      "parent": "s3",
+      "stage": "s3",
+      "meshName": "S_IVB_Tanks",
+      "explodeOffset": [0, 0, 0],
+      "info": {
+        "summary": "Liquid-hydrogen and liquid-oxygen tanks, again sharing a common bulkhead.",
+        "purpose": "Hold enough propellant for two burns, keeping it cold through hours in orbit.",
+        "materials": [
+          "Aluminium alloy",
+          "Internal insulation"
+        ]
+      },
+      "model": {
+        "at": [0, 0.85, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 0.825,
+            "rBottom": 0.825,
+            "h": 3.6,
+            "at": [0, 0, 0]
+          }
+        ]
+      }
+    },
+    {
+      "id": "s3.iu",
+      "name": "Instrument Unit",
+      "parent": "s3",
+      "stage": "s3",
+      "meshName": "S_IVB_IU",
+      "explodeOffset": [0, 0.8, 0],
+      "info": {
+        "summary": "A ring 0.9 m tall and 6.6 m across, packed with guidance computers and sensors.",
+        "purpose": "The rocket's brain: it steered all three stages, timed every engine cutoff and staging event, and talked to the ground.",
+        "funFact": "Its Launch Vehicle Digital Computer was separate from the spacecraft's famous Apollo Guidance Computer, and it ran the rocket on its own."
+      },
+      "model": {
+        "at": [0, 4.45, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 0.825,
+            "rBottom": 0.825,
+            "h": 0.23,
+            "at": [0, 0, 0]
+          }
+        ]
+      }
+    },
+    {
+      "id": "sc",
+      "name": "Apollo spacecraft",
+      "parent": null,
+      "stage": "sc",
+      "meshName": "Apollo",
+      "explodeOffset": [0, 4.5, 0],
+      "info": {
+        "summary": "The Lunar Module Eagle, the Service Module and the Command Module Columbia, under the launch escape tower.",
+        "purpose": "Everything the Saturn V existed to launch: about 45 tonnes bound for the Moon, carrying Neil Armstrong, Michael Collins and Buzz Aldrin."
+      },
+      "model": {
+        "at": [0, 21.43, 0],
+        "shapes": []
+      }
+    },
+    {
+      "id": "sc.sla",
+      "name": "Spacecraft–LM adapter",
+      "parent": "sc",
+      "stage": "sc",
+      "meshName": "Apollo_SLA",
+      "explodeOffset": [0, -0.5, 0],
+      "info": {
+        "summary": "An 8.5 m tapered shroud between the rocket and the spacecraft.",
+        "purpose": "Protects the fragile Lunar Module during launch. After the Moon burn, its four panels swing open so the crew can dock with the LM and pull it out."
+      },
+      "model": {
+        "at": [0, 0, 0],
+        "shapes": [
+          {
+            "type": "lathe",
+            "profile": [
+              [0.825, 0],
+              [0.49, 2.13]
+            ],
+            "at": [0, 0, 0]
+          }
+        ]
+      }
+    },
+    {
+      "id": "sc.lm",
+      "name": "Lunar Module Eagle",
+      "parent": "sc",
+      "stage": "sc",
+      "meshName": "Apollo_LM",
+      "explodeOffset": [1.8, 0.3, 0],
+      "info": {
+        "summary": "The two-stage lander that took Armstrong and Aldrin to the surface, folded up inside the adapter.",
+        "purpose": "Its descent stage landed on the Moon. The ascent stage then lifted off from it to rejoin Columbia in lunar orbit.",
+        "specs": {
+          "Mass": "about 15 tonnes",
+          "Crew": "2"
+        },
+        "funFact": "Some of its outer skin was thinner than a few sheets of paper, because every kilogram saved mattered."
+      },
+      "model": {
+        "at": [0, 0.25, 0],
+        "shapes": [
+          {
+            "type": "box",
+            "size": [0.75, 0.45, 0.75],
+            "at": [0, 0.35, 0]
+          },
+          {
+            "type": "box",
+            "size": [0.05, 0.5, 0.05],
+            "at": [0, 0.35, 0],
+            "repeat": {
+              "count": 4,
+              "radius": 0.45,
+              "phase": 45
+            }
+          },
+          {
+            "type": "cylinder",
+            "rTop": 0.3,
+            "rBottom": 0.3,
+            "h": 0.45,
+            "at": [0, 0.6, 0],
+            "segments": 12
+          }
+        ]
+      }
+    },
+    {
+      "id": "sc.sm",
+      "name": "Service Module",
+      "parent": "sc",
+      "stage": "sc",
+      "meshName": "Apollo_SM",
+      "explodeOffset": [0, 1, 0],
+      "info": {
+        "summary": "The cylinder behind the Command Module, holding the main engine, fuel, oxygen and power.",
+        "purpose": "Its engine put Apollo into lunar orbit and brought it home. It was discarded just before re-entry.",
+        "specs": {
+          "Diameter": "3.9 m",
+          "Engine thrust": "about 20,500 lbf (91 kN)"
+        }
+      },
+      "model": {
+        "at": [0, 2.13, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 0.49,
+            "rBottom": 0.49,
+            "h": 1.0,
+            "at": [0, 0, 0]
+          },
+          {
+            "type": "cylinder",
+            "rTop": 0.1,
+            "rBottom": 0.26,
+            "h": 0.55,
+            "open": true,
+            "at": [0, -0.55, 0],
+            "segments": 24
+          }
+        ]
+      }
+    },
+    {
+      "id": "sc.cm",
+      "name": "Command Module Columbia",
+      "parent": "sc",
+      "stage": "sc",
+      "meshName": "Apollo_CM",
+      "explodeOffset": [0, 2, 0],
+      "info": {
+        "summary": "The cone-shaped capsule where the three astronauts rode.",
+        "purpose": "Home for the crew for eight days, and the only part of the whole 110 m stack that came back to Earth.",
+        "specs": {
+          "Height": "3.2 m",
+          "Diameter": "3.9 m",
+          "Crew": "3"
+        },
+        "funFact": "Columbia is on display at the Smithsonian's National Air and Space Museum in Washington, DC."
+      },
+      "model": {
+        "at": [0, 3.13, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 0.08,
+            "rBottom": 0.49,
+            "h": 0.8,
+            "at": [0, 0, 0]
+          }
+        ]
+      }
+    },
+    {
+      "id": "les",
+      "name": "Launch escape tower",
+      "parent": "sc",
+      "stage": "les",
+      "meshName": "Apollo_LES",
+      "explodeOffset": [0, 3.5, 0],
+      "info": {
+        "summary": "A rocket on a tower, sitting on top of the Command Module under a protective cover.",
+        "purpose": "If the Saturn V failed on the pad or early in flight, its solid motor would pull the Command Module and crew clear in seconds. Once the second stage is burning it's no longer needed, so it is jettisoned.",
+        "specs": {
+          "Height": "about 10 m",
+          "Escape motor thrust": "about 147,000 lbf (650 kN)"
+        },
+        "funFact": "It was never needed on a crewed Apollo flight. The boost protective cover underneath also kept the windows clean during launch."
+      },
+      "model": {
+        "at": [0, 3.1, 0],
+        "shapes": [
+          {
+            "type": "cylinder",
+            "rTop": 0.1,
+            "rBottom": 0.51,
+            "h": 0.83,
+            "at": [0, 0, 0]
+          },
+          {
+            "type": "cylinder",
+            "rTop": 0.12,
+            "rBottom": 0.16,
+            "h": 0.55,
+            "open": true,
+            "at": [0, 0.83, 0],
+            "segments": 4
+          },
+          {
+            "type": "cylinder",
+            "rTop": 0.11,
+            "rBottom": 0.11,
+            "h": 1.4,
+            "at": [0, 1.38, 0],
+            "segments": 24
+          },
+          {
+            "type": "cylinder",
+            "rTop": 0.02,
+            "rBottom": 0.11,
+            "h": 0.4,
+            "at": [0, 2.78, 0],
+            "segments": 24
+          }
+        ]
+      },
+      "track": {
+        "frame": "stack",
+        "keys": [
+          {
+            "t": 197,
+            "offset": [0, 0, 0]
+          },
+          {
+            "t": 199,
+            "offset": [0.1, 2.5, 0],
+            "rotation": [0, 0, 0.05]
+          },
+          {
+            "t": 203,
+            "offset": [0.8, 6, 0],
+            "rotation": [0, 0, 0.4]
+          },
+          {
+            "t": 210,
+            "offset": [3, 7, 0],
+            "rotation": [0, 0, 1.2]
+          },
+          {
+            "t": 222,
+            "offset": [7, 0, 0],
+            "rotation": [0, 0, 2.2]
+          },
+          {
+            "t": 240,
+            "offset": [12, -18, 0],
+            "rotation": [0, 0, 3]
+          },
+          {
+            "t": 270,
+            "offset": [18, -60, 0],
+            "rotation": [0, 0, 3.6]
+          }
+        ]
+      }
+    }
+  ],
+  "flight": {
+    "start": -10,
+    "end": 709,
+    "events": [
+      {
+        "t": -10,
+        "phase": "countdown",
+        "phaseLabel": "Countdown",
+        "title": "Countdown",
+        "caption": "16 July 1969, Launch Complex 39A, Kennedy Space Center. Seconds before liftoff the five F-1 engines ignite one after another and build up to full thrust while hold-down arms keep the rocket on the pad."
+      },
+      {
+        "t": 0,
+        "phase": "ascent",
+        "phaseLabel": "Ascent",
+        "title": "Liftoff",
+        "caption": "Liftoff at 9:32 a.m. EDT. The hold-down arms release and nearly 3,000 tonnes of rocket begin to rise, slowly at first."
+      },
+      {
+        "t": 66,
+        "phase": "ascent",
+        "phaseLabel": "Ascent",
+        "title": "Mach 1",
+        "caption": "The Saturn V passes the speed of sound about 6 km (4 miles) up."
+      },
+      {
+        "t": 83,
+        "phase": "ascent",
+        "phaseLabel": "Ascent",
+        "title": "Max-Q",
+        "caption": "Maximum dynamic pressure: the moment when speed and air density together put the most aerodynamic stress on the vehicle."
+      },
+      {
+        "t": 135,
+        "phase": "ascent",
+        "phaseLabel": "Ascent",
+        "title": "Centre engine cutoff",
+        "caption": "The centre F-1 shuts down as planned, at T+2:15, to keep acceleration within limits now that the rocket has burned off much of its weight."
+      },
+      {
+        "t": 162,
+        "phase": "staging",
+        "phaseLabel": "Staging",
+        "title": "First-stage separation",
+        "caption": "The four outer F-1s cut off at T+2:42, about 68 km up and moving at 9,900 km/h (6,164 mph). Retro-rockets back the empty S-IC away, and it falls into the Atlantic."
+      },
+      {
+        "t": 165,
+        "phase": "second-stage",
+        "phaseLabel": "Second stage",
+        "title": "S-II ignition",
+        "caption": "The five J-2 hydrogen engines of the second stage start up."
+      },
+      {
+        "t": 193,
+        "phase": "second-stage",
+        "phaseLabel": "Second stage",
+        "title": "Interstage jettison",
+        "caption": "About 30 seconds after the second stage lights, the ring-shaped aft interstage drops away."
+      },
+      {
+        "t": 197,
+        "phase": "second-stage",
+        "phaseLabel": "Second stage",
+        "title": "Escape tower jettison",
+        "caption": "The launch escape tower isn't needed any more. It fires its own small jettison motor and pulls itself clear, taking the protective cover off Columbia's windows."
+      },
+      {
+        "t": 460,
+        "phase": "second-stage",
+        "phaseLabel": "Second stage",
+        "title": "S-II centre engine cutoff",
+        "caption": "The second stage's centre engine shuts down early to prevent pogo, a dangerous bouncing vibration."
+      },
+      {
+        "t": 549,
+        "phase": "staging",
+        "phaseLabel": "Staging",
+        "title": "Second-stage separation",
+        "caption": "The S-II's engines cut off at about 176 km (110 miles) and 24,000 km/h (15,000 mph). The second stage separates."
+      },
+      {
+        "t": 552,
+        "phase": "third-stage",
+        "phaseLabel": "Third stage",
+        "title": "S-IVB ignition",
+        "caption": "The third stage's single J-2 engine lights for its first burn."
+      },
+      {
+        "t": 699,
+        "phase": "third-stage",
+        "phaseLabel": "Third stage",
+        "title": "S-IVB cutoff",
+        "caption": "The J-2 shuts down, but the S-IVB still has enough propellant left for its second, much longer burn."
+      },
+      {
+        "t": 709,
+        "phase": "orbit",
+        "phaseLabel": "Earth orbit",
+        "title": "Earth orbit",
+        "caption": "Apollo 11 is in a parking orbit about 190 km (118 miles) up. After one and a half orbits of checks, at T+2:44, the S-IVB relights for translunar injection and the trip to the Moon."
+      }
+    ],
+    "altitude": [
+      [0, 0],
+      [30, 3],
+      [60, 16],
+      [83, 32],
+      [120, 80],
+      [162, 165],
+      [200, 240],
+      [300, 420],
+      [400, 560],
+      [549, 700],
+      [709, 760]
+    ]
+  },
+  "sources": [
+    {
+      "title": "Saturn V Launch Vehicle Flight Evaluation Report AS-506 (Apollo 11)",
+      "url": "https://ibiblio.org/apollo/Documents/lvfea-AS506-Apollo11.pdf"
+    },
+    {
+      "title": "Apollo 11 Flight Journal: launch",
+      "url": "https://www.apollojournals.org/afj/ap11fj/01launch.html"
+    },
+    {
+      "title": "Saturn V, Wikipedia",
+      "url": "https://en.wikipedia.org/wiki/Saturn_V"
+    }
+  ]
+}

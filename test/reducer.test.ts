@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { rocket } from '../js/data/rocket';
+import { rocket } from './fixtures';
 import { createReducer, initialState, visibilityOf } from '../js/state/reducer';
 import type { RocketState } from '../js/state/reducer';
 import type { Action } from '../js/state/actions';
